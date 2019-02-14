@@ -1,32 +1,161 @@
-.App {
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+#title {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+#version {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: rgba(0, 0, 0, 0.8);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#schedule {
+  font-size: 10px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: 1px solid #444;
 }
 
-.App-link {
-  color: #61dafb;
+.case {
+  display: grid;
+  border: 1px solid #444;
+  min-height: 75px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.infoCase{
+  margin: 10px 0 10px 0;
+}
+
+.infoCase>* {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  padding: 2px 0 2px 0;
+  font-size: 13px;
+}
+
+.subCase {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: all .5s;
+  /*transition: width .1s, transform .1s;
+  width: 100%;*/
+}
+
+/*.subCase:hover {
+  z-index: 5;
+  width: 200%;
+  transform: translateX(-25%);
+}*/
+
+.subCase>div>span {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+
+.subCase>div{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#filterBox {
+  padding: 0px 20px 20px 20px;
+}
+
+#filterBox > div{
+  margin-left: 1em;
+  margin-right: 2em;
+  display: inline-block;
+  float: left;
+}
+
+#filterBox::after{
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#filterBox > div > label {
+  display: inline-block;
+  width: 75px;
+}
+
+#filterBox > div > select {
+  width: 75px;
+}
+
+input[type="number"] {
+  text-align: center;
+  margin: 0 .5em 0 .5em;
+}
+
+#weekLabel {
+  position: relative;
+  left: 1em;
+  bottom: 6px;
+}
+
+#groups>div{
+  margin: 0 1em 0 1em;
+  display: inline-block;
+}
+
+.groupChooser {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  border: 1px solid black;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 300px;
+}
+
+.groupChooser > div {
+  padding: .5em 0 .5em 0;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid black;
+  background-color: #AAA;
+  font-weight: bold;
+  transition: background-color .2s
+}
+
+.groupChooser>div:hover {
+  background-color: #DDD;
+}
+
+.groupChooser>.selected {
+  border: 1px solid #1b5e20;
+  background-color: #66bb6a;
+}
+
+.groupChooser>.selected:hover {
+  background-color: #c8e6c9;
+}
+
+@media screen and (max-width: 383px) {
+  #filterBox{
+    padding: 0 0 20px 0 !important;
   }
-  to {
-    transform: rotate(360deg);
+  #groups{
+    margin-left: 0em !important;
+    margin-right: 0em !important;
+    width: 98%;
+  }
+  #groups>div{
+    width: 100%;
+    margin-left: 0em !important;
+    margin-right: 0em !important;
+  }
+  .groupChooser {
+    width: 100%;
   }
 }
