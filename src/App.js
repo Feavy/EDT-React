@@ -1,3 +1,23 @@
+/**
+ * <!> Attention <!>
+ * 
+ * Le code est pour l'instant mal organisé, il
+ * sera refactorisé et commenté très prochainement.
+ * 
+ * 
+ * Ci-dessous le code source d'une webapp servant à
+ * l'affichage de l'emploi du temps du département
+ * informatique de l'IUT de Blagnac.
+ * 
+ * 
+ * Les emplois du temps sont générés automatiquement
+ * par le logiciel libre FlopEDT :
+ * 
+ * http://www.flopedt.org/
+ * 
+ */
+
+
 import React, { Component } from 'react';
 //import file from './0.csv';
 import './App.css';
@@ -36,6 +56,12 @@ function getWeekNumber(d) {
   var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
   // Return array of year and week number
   return [d.getUTCFullYear(), weekNo];
+}
+
+function getDateOfWeek(w, y) {
+  var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+
+  return new Date(y, 0, d);
 }
 
 var result = getWeekNumber(new Date());
@@ -89,15 +115,16 @@ class ScheduleCase extends Component {
 
     this.updateData = this.updateData.bind(this);
     this.updateData();
+    
+    this.classes = ["case"];
+    if(this.props.isFirstLeft)
+      this.classes.push("firstLeft");
+    if(this.props.isFirstTop)
+      this.classes.push("firstTop");
   }
 
   updateData() {
     var data = this.props.data;
-
-    if(this.props.debug)
-      console.log(this.props.debug)
-
-    console.log("eee");
     for(let i = 0; i < data.length; i++) {
       var lastVisibleIndex = 0;      // Peut-être source de bugs ?
       for(let j = 0; j < data[i].length; j++) {
@@ -140,7 +167,7 @@ class ScheduleCase extends Component {
     let filter = this.props.filter;
     var groupsAmount = Math.max(this.props.filter.groups[0].length, this.props.filter.groups[1].length);
     return (
-      <div className="case" style={{gridTemplateColumns: "repeat("+groupsAmount+", 1fr)"}}>
+      <div className={this.classes.join(" ")} style={{gridTemplateColumns: "repeat("+groupsAmount+", 1fr)"}}>
         {this.props.data.map((promos, row) => promos.map((groupe, column) => filter.groups[row].includes(column) && groupe.visible ? (
             <div style={{gridRow: groupe.row, gridColumnStart: groupe.columnStart,
             gridColumnEnd: groupe.columnEnd, backgroundColor: groupe.bgColor, color: groupe.txtColor,
@@ -161,24 +188,81 @@ class ScheduleCase extends Component {
 class Schedule extends Component {
   constructor(props) {
     super(props);
+    this.hideMessageBox = this.hideMessageBox.bind(this);
+    let groupsLabels = [];
+    for(let index in this.props.filter.groups[0]) {
+      groupsLabels.push(GROUPES[index]);
+    }
+    this.state = {
+      msgBoxVisible: false,
+      msgBoxLines: undefined,
+      groupsLabels: groupsLabels
+    };
+    this.dayIndexes = ["Lun.", "Mar.", "Mer.", "Jeu.", "Ven."];
+  }
+
+  showMessageBox(lines) {
+    console.log("click detected");
+    this.setState({
+      msgBoxVisible: true,
+      msgBoxLines: lines
+    });
+  }
+
+  hideMessageBox() {
+    this.setState({
+      msgBoxVisible: false
+    });
   }
 
   render() {
     var debug = 1;
-    //console.log("e",this.props.edt[0][3]);
+    const {firstDay} = this.props;
+    console.log(firstDay);
     return (
       <div id="schedule">
-        {this.props.edt.map((jour, index) => jour.map(heure => index == 3 ? (
-                                                  <div className="infoCase">
-                                                    {heure.lines.map(line => line.url ? (
-                                                            <a href={line.url} style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</a>
-                                                          ) : (
-                                                            <span style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</span>)
-                                                          )}
-                                                  </div>
-                                              ) : (
-                                                  <ScheduleCase debug={debug-- == 1} filter={this.props.filter} data={heure}/>))
-                                              )}
+        {this.props.days && this.dayIndexes.map((id, index) => 
+          <div>
+            <h2 key={id} style={{textAlign: "center"}}>{id+" "+this.props.days[index]}</h2>
+          </div>)}
+        {this.dayIndexes.map(id => 
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[0].length+", 1fr)"}}>
+            {this.props.filter.groups[0].map(index => <span style={{textAlign: "center", overflow:"hidden"}} key={id+"-gr"+index}>{GROUPES[index]}</span>)}
+          </div>)}
+        {this.props.edt.map((jour, index) => jour.map((heure, index2) => index == 3 ? (
+          <div key={index+";"+index2} className="infoCase">
+            {heure.lines.length > 0 && this.props.isMobile ? <div key={index+";"+index2+"-i"} className="infoButton" onClick={() => this.showMessageBox(heure.lines)}><span>Infos</span></div> :
+            heure.lines.map(line => line.url ? (
+                    <a href={line.url} style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</a>
+                  ) : (
+                    <span style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</span>)
+                  )}
+          </div>
+      ) : (
+          <ScheduleCase isFirstTop={index == 0 || index == 4} isFirstLeft={index2 == 0} debug={debug-- == 1} filter={this.props.filter} data={heure}/>))
+      )}
+        {this.state.msgBoxVisible && <MessageBox onClose={this.hideMessageBox} lines={this.state.msgBoxLines}/>}
+      </div>
+    );
+  }
+}
+
+class MessageBox extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const lines = this.props.lines;
+    return (
+      <div id="msgBoxBg" onClick={this.props.onClose}>
+        <div id="msgBox">
+        {lines.map((line,index) => line.url ? (
+          <a key={"msgBoxLine-"+index} href={line.url} target="_blank">{line.txt}</a>
+        ) : (
+          <span key={"msgBoxLine-"+index}>{line.txt}</span>)
+        )}
+        </div>
       </div>
     );
   }
@@ -267,17 +351,20 @@ class App extends Component {
                   edtData: [],
                   filter: {
                     week: defaultWeek,
+                    year: defaultYear,
                     groups: groupFilter,
                     module: "TOUS",
                     profNom: "TOUS",
                     salle: "TOUTES"
-                  }
+                  },
+                  isMobile: false
                  };
 
+    fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+defaultYear+"&week="+this.state.filter.week).then(data => data.text().then(txt => this.onDataLoaded(txt, defaultWeek, defaultYear))).catch(error => console.log(error));
 
-    
+    this.onWindowResized = this.onWindowResized.bind(this);
 
-    fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+defaultYear+"&week="+this.state.filter.week).then(data => data.text().then(txt => this.onDataLoaded(txt))).catch(error => console.log(error));
+    window.addEventListener("resize", this.onWindowResized);
 
     /*
     Structuration : 
@@ -289,7 +376,13 @@ class App extends Component {
     */
   }
   
-  onDataLoaded(data) {
+  onWindowResized(e) {
+    let isMobile = window.innerWidth < 529;
+    if(this.state && this.state.isMobile != isMobile)
+      this.setState({isMobile: isMobile});
+  }
+
+  onDataLoaded(data, week, year) {
     profs = ["TOUS"];
     modules = ["TOUS"];
     salles = ["TOUTES"];
@@ -315,9 +408,6 @@ class App extends Component {
         line = lines[i++];
       }
     }
-
-    console.table(tbl);
-    console.table(infosTbl);
 
     for(let i = 0; i < 7; i++) {    // Creation heures
       edtData[i] = [];
@@ -387,7 +477,6 @@ class App extends Component {
         for(let i = 0; i < infosTbl.length; i++) {
           let column = Number.parseInt(infosTbl[i][1]);
           let line = Number.parseInt(infosTbl[i][3]) || 0;
-          console.log(column);
           if(!edtData[3][column].lines[line])
             edtData[3][column].lines[line] = {};
           edtData[3][column].lines[line].txt = infosTbl[i][4];
@@ -397,7 +486,22 @@ class App extends Component {
         }
       }
 
-      this.setState({edtData: edtData});
+      let days = [];
+      let d = getDateOfWeek(week, year);
+      console.log(d);
+      for(let i = 0; i < 5; i++) {
+        let day = d.getUTCDate();
+        let month = d.getUTCMonth()+1;
+        if(day < 10)
+          day = "0"+day;
+        if(month < 10)
+          month = "0"+month;
+        days[i] = day+"/"+month;
+        d.setUTCDate(d.getUTCDate()+1);
+      }
+
+      this.setState({edtData: edtData, days: days});
+      this.onWindowResized();
     }
 
     onFilterChanged(prop, newValue) {
@@ -419,7 +523,7 @@ class App extends Component {
         localStorage.setItem("lastGroupFilter", JSON.stringify(newFilter.groups));
         firstFilter = false;
       } else if(prop == "week") {
-        fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+newValue.year+"&week="+newValue.week).then(data => data.text().then(txt => this.onDataLoaded(txt))).catch(error => console.log(error));
+        fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+newValue.year+"&week="+newValue.week).then(data => data.text().then(txt => this.onDataLoaded(txt, newValue.week, newValue.year))).catch(error => console.log(error));
       } else {
         newFilter[prop] = newValue;
       }
@@ -427,12 +531,16 @@ class App extends Component {
     }
 
     render() {
+      console.log(this.state.filter);
       return (
         <div className="App">
           <h1 id="title">Emploi du temps - IUT de Blagnac</h1>
-          <span id="version">Alpha 1.0</span>
+          <div id="info">
+            <p>Alpha 2.0</p>
+            <a href="https://github.com/Feavy/EDT-React" target="_blank">Code Source</a>
+          </div>
           <FilterChooser filter={this.state.filter} onFilterChanged={this.onFilterChanged}/>
-          <Schedule filter={this.state.filter} edt={this.state.edtData} />
+          <Schedule days={this.state.days} isMobile={this.state.isMobile} filter={this.state.filter} edt={this.state.edtData} />
         </div>
         );
       }
