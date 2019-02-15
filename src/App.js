@@ -22,6 +22,10 @@ import React, { Component } from 'react';
 //import file from './0.csv';
 import './App.css';
 
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+
 const ID_COURS = 0,
 NUM_COURS = 1,
 PROF_NOM = 2,
@@ -100,9 +104,9 @@ class WeekSelector extends Component {
   render() {
     return (
       <div>
-        <button type="submit" onClick={(e) => this.onWeekChanged(this.state.value-1)}>◀</button>
-        <input type="number" value={this.state.value} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}></input>
-        <button type="submit" onClick={(e) => this.onWeekChanged(this.state.value+1)}>▶</button>
+        <button onClick={(e) => this.onWeekChanged(this.state.value-1)}>◀</button>
+        <TextField className="input" type="number" value={this.state.value} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
+        <button class="button" onClick={(e) => this.onWeekChanged(this.state.value+1)}>▶</button>
         <p>Année : <span style={{fontWeight: "bold"}}>{this.state.year}</span></p>
       </div>
     )
@@ -310,21 +314,21 @@ class FilterChooser extends Component{
         </div>
         <div>
           <h4>Professeur : </h4>
-          <select onChange={(e) => this.props.onFilterChanged("profNom", e.target.value)}>
-            {profs.map(nom => <option value={nom}>{nom}</option>)}
-          </select>
+          <Select value={this.props.filter.profNom} onChange={(e) => this.props.onFilterChanged("profNom", e.target.value)}>
+            {profs.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
+          </Select>
         </div>
         <div>
           <h4>Salle : </h4>
-          <select onChange={(e) => this.props.onFilterChanged("salle", e.target.value)}>
-            {salles.map(nom => <option value={nom}>{nom}</option>)}
-          </select>
+          <Select value={this.props.filter.salle} onChange={(e) => this.props.onFilterChanged("salle", e.target.value)}>
+            {salles.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
+          </Select>
         </div>
         <div>
           <h4>Module : </h4>
-          <select onChange={(e) => this.props.onFilterChanged("module", e.target.value)}>
-            {modules.map(nom => <option value={nom}>{nom}</option>)}
-          </select>
+          <Select value={this.props.filter.module} onChange={(e) => this.props.onFilterChanged("module", e.target.value)}>
+            {modules.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
+          </Select>
         </div>
       </div>
     );
@@ -360,7 +364,7 @@ class App extends Component {
                   isMobile: false
                  };
 
-    fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+defaultYear+"&week="+this.state.filter.week).then(data => data.text().then(txt => this.onDataLoaded(txt, defaultWeek, defaultYear))).catch(error => console.log(error));
+    fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+defaultYear+"&week="+this.state.filter.week).then(data => data.text().then(txt => this.onDataLoaded(txt, defaultWeek, defaultYear))).catch(error => console.log(error));
 
     this.onWindowResized = this.onWindowResized.bind(this);
 
@@ -377,7 +381,7 @@ class App extends Component {
   }
   
   onWindowResized(e) {
-    let isMobile = window.innerWidth < 529;
+    let isMobile = window.innerWidth < 640;
     if(this.state && this.state.isMobile != isMobile)
       this.setState({isMobile: isMobile});
   }
@@ -523,7 +527,7 @@ class App extends Component {
         localStorage.setItem("lastGroupFilter", JSON.stringify(newFilter.groups));
         firstFilter = false;
       } else if(prop == "week") {
-        fetch("https://edt-relai.000webhostapp.com/fetch.php?infos=1&year="+newValue.year+"&week="+newValue.week).then(data => data.text().then(txt => this.onDataLoaded(txt, newValue.week, newValue.year))).catch(error => console.log(error));
+        fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+newValue.year+"&week="+newValue.week).then(data => data.text().then(txt => this.onDataLoaded(txt, newValue.week, newValue.year))).catch(error => console.log(error));
       } else {
         newFilter[prop] = newValue;
       }
@@ -536,7 +540,7 @@ class App extends Component {
         <div className="App">
           <h1 id="title">Emploi du temps - IUT de Blagnac</h1>
           <div id="info">
-            <p>Alpha 2.0</p>
+            <p>Alpha 2.1</p>
             <a href="https://github.com/Feavy/EDT-React" target="_blank">Code Source</a>
           </div>
           <FilterChooser filter={this.state.filter} onFilterChanged={this.onFilterChanged}/>
