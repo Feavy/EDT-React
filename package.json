@@ -5,7 +5,6 @@
   "homepage": "http://feavy.tk/edt",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
-    "materialize-css": "^1.0.0-rc.2",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-scripts": "2.1.3"

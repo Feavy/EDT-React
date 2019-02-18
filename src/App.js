@@ -19,7 +19,6 @@
 
 
 import React, { Component } from 'react';
-//import file from './0.csv';
 import './App.css';
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -73,30 +72,44 @@ var result = getWeekNumber(new Date());
 const defaultYear = result[0];
 const defaultWeek = result[1];
 
+/** Week Selector Widget
+ * 
+ * Widget utilisé pour selectionner une semaine précise
+ * 
+ */
+
 class WeekSelector extends Component {
 
+  /**
+   * props :
+   * {value: semaine actuellement sélectionnée}
+   */
   constructor(props) {
     super(props);
-    this.state = {value: this.props.value, year: defaultYear};
+    this.state = {week: this.props.week, year: this.props.year};
   }
 
-  onWeekChanged(newValue) {
-    if(!isNaN(newValue)) {
+  /**
+   * Callback appelé lorsqu'une nouvelle semaine est sélectionnée
+   * @param {*} newWeek 
+   */
+  onWeekChanged(newWeek) {
+    if(!isNaN(newWeek)) {
       let newYear = this.state.year;
-      while(newValue < 2) {
-        newValue += 50;
+      if(newWeek < 2) {
+        newWeek += 50;
         newYear--;
       }
-      while(newValue > 51) {
-        newValue -= 50;
+      if(newWeek > 51) {
+        newWeek -= 50;
         newYear++;
       }
-      this.setState({value: newValue, year: newYear});
+      this.setState({week: newWeek, year: newYear});
       if(this.changeTimeout) {
         clearTimeout(this.changeTimeout);
       }
       this.changeTimeout = setTimeout(() => {
-        this.props.onWeekChanged({week: this.state.value, year: this.state.year});
+        this.props.onWeekChanged({week: this.state.week, year: this.state.year});
       }, 500);
     }
   }
@@ -104,12 +117,84 @@ class WeekSelector extends Component {
   render() {
     return (
       <div>
-        <button onClick={(e) => this.onWeekChanged(this.state.value-1)}>◀</button>
-        <TextField className="input" type="number" value={this.state.value} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
-        <button class="button" onClick={(e) => this.onWeekChanged(this.state.value+1)}>▶</button>
+        <button onClick={(e) => this.onWeekChanged(this.state.week-1)}><i class="material-icons">arrow_left</i></button>
+        <TextField className="input" type="number" value={this.state.week} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
+        <button class="button" onClick={(e) => this.onWeekChanged(this.state.week+1)}><i class="material-icons">arrow_right</i></button>
         <p>Année : <span style={{fontWeight: "bold"}}>{this.state.year}</span></p>
       </div>
     )
+  }
+}
+
+const centerStyle = {textAlign: "center"};
+
+/**
+ * NOK -> A simplifier
+ */
+class Schedule extends Component {
+  constructor(props) {
+    super(props);
+    this.dayIndexes = ["Lun.", "Mar.", "Mer.", "Jeu.", "Ven."];
+  }
+
+  render() {
+    var debug = 1;
+    return (
+      <div id="schedule">
+        
+        {// Affichage des dates : 
+        this.dayIndexes.map((id, index) => 
+          <div>
+            <h2 key={id} style={centerStyle}>{id+" "+this.props.days[index]}</h2>
+          </div>
+        )}
+
+        {// Affichage des labels de groupes :
+        this.dayIndexes.map(id => 
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[0].length+", 1fr)"}}>
+            {this.props.filter.groups[0].map(index =>
+                  <span style={{textAlign: "center", overflow:"hidden"}} key={id+"-gr"+index}>{GROUPES[index]}</span>
+            )}
+          </div>
+        )}
+        
+        {// Affichage des cases :
+        this.props.edt.map((heure, index) =>
+                            heure.map((jour, index2) =>
+                                      index == 3 ? (  // 12h30 -> 14h15 (zone d'annonce)
+                                            <ScheduleInfoCase data={jour}/>
+                                      ) : (
+                                            <ScheduleCase isFirstTop={index == 0 || index == 4}
+                                                        isFirstLeft={index2 == 0} debug={debug-- == 1} filter={this.props.filter} data={jour}/>
+                                      )
+                                    )
+                          )
+        }
+      </div>
+    );
+  }
+}
+
+/**
+ * NOK : Rajouter les keys
+ */
+class ScheduleInfoCase extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const heure = this.props.data;
+    return (
+      <div /*key={index+";"+index2}*/ className="infoCase">
+      {heure.lines.length > 0 && this.props.isMobile ? <div /*key={index+";"+index2+"-i"}*/ className="infoButton" onClick={() => MessageBox.show(heure.lines)}><span>Infos</span></div> :
+      heure.lines.map(line => line.url ? (
+              <a href={line.url} style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</a>
+            ) : (
+              <span style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</span>)
+            )}
+      </div>
+    );
   }
 }
 
@@ -128,14 +213,15 @@ class ScheduleCase extends Component {
   }
 
   updateData() {
+
+    // Déplacer ce calcul d'affichage ailleurs ??
+
     var data = this.props.data;
     for(let i = 0; i < data.length; i++) {
       var lastVisibleIndex = 0;      // Peut-être source de bugs ?
       for(let j = 0; j < data[i].length; j++) {
         let current = data[i][j];
 
-        current.columnStart = j+1;      // Pas forcément : Imaginons le groupe 4B, si les seuls filtres sont [0, 7],
-                                        //                 ce groupe appraîtra en colonne 2 et non pas 7
         current.visible = this.props.filter.groups[i].includes(j);
         let c = Math.max(this.props.filter.groups[i].indexOf(j),this.props.filter.groups[i==0?1:0].indexOf(j))+1;
         current.columnStart = c;
@@ -167,17 +253,23 @@ class ScheduleCase extends Component {
     this.updateData();
   }
 
+  getOpacity(groupe) {
+    const filter = this.props.filter;
+    return  (filter.module == "TOUS" || filter.module == groupe.module) &&
+            (filter.profNom == "TOUS" || filter.profNom == groupe.profNom) &&
+            (filter.salle == "TOUTES" || filter.salle == groupe.salle) ? 1 : 0.3;
+  }
+
   render() {
-    let filter = this.props.filter;
+    const filter = this.props.filter;
     var groupsAmount = Math.max(this.props.filter.groups[0].length, this.props.filter.groups[1].length);
     return (
       <div className={this.classes.join(" ")} style={{gridTemplateColumns: "repeat("+groupsAmount+", 1fr)"}}>
         {this.props.data.map((promos, row) => promos.map((groupe, column) => filter.groups[row].includes(column) && groupe.visible ? (
-            <div style={{gridRow: groupe.row, gridColumnStart: groupe.columnStart,
-            gridColumnEnd: groupe.columnEnd, backgroundColor: groupe.bgColor, color: groupe.txtColor,
-            opacity: (filter.module == "TOUS" || filter.module == groupe.module) &&
-                      (filter.profNom == "TOUS" || filter.profNom == groupe.profNom) &&
-                      (filter.salle == "TOUTES" || filter.salle == groupe.salle) ? 1 : 0.3}} className="subCase">
+            <div className="subCase" style={{gridRow: groupe.row,
+                                            gridColumnStart: groupe.columnStart, gridColumnEnd: groupe.columnEnd,
+                                            backgroundColor: groupe.bgColor, color: groupe.txtColor,
+                                            opacity: this.getOpacity(groupe)}}>
                 <div>
                 <span>{groupe.module}</span>
                 <span>{groupe.profNom}</span>
@@ -189,77 +281,30 @@ class ScheduleCase extends Component {
   }
 }
 
-class Schedule extends Component {
-  constructor(props) {
-    super(props);
-    this.hideMessageBox = this.hideMessageBox.bind(this);
-    let groupsLabels = [];
-    for(let index in this.props.filter.groups[0]) {
-      groupsLabels.push(GROUPES[index]);
-    }
-    this.state = {
-      msgBoxVisible: false,
-      msgBoxLines: undefined,
-      groupsLabels: groupsLabels
-    };
-    this.dayIndexes = ["Lun.", "Mar.", "Mer.", "Jeu.", "Ven."];
-  }
-
-  showMessageBox(lines) {
-    console.log("click detected");
-    this.setState({
-      msgBoxVisible: true,
-      msgBoxLines: lines
-    });
-  }
-
-  hideMessageBox() {
-    this.setState({
-      msgBoxVisible: false
-    });
-  }
-
-  render() {
-    var debug = 1;
-    const {firstDay} = this.props;
-    console.log(firstDay);
-    return (
-      <div id="schedule">
-        {this.props.days && this.dayIndexes.map((id, index) => 
-          <div>
-            <h2 key={id} style={{textAlign: "center"}}>{id+" "+this.props.days[index]}</h2>
-          </div>)}
-        {this.dayIndexes.map(id => 
-          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[0].length+", 1fr)"}}>
-            {this.props.filter.groups[0].map(index => <span style={{textAlign: "center", overflow:"hidden"}} key={id+"-gr"+index}>{GROUPES[index]}</span>)}
-          </div>)}
-        {this.props.edt.map((jour, index) => jour.map((heure, index2) => index == 3 ? (
-          <div key={index+";"+index2} className="infoCase">
-            {heure.lines.length > 0 && this.props.isMobile ? <div key={index+";"+index2+"-i"} className="infoButton" onClick={() => this.showMessageBox(heure.lines)}><span>Infos</span></div> :
-            heure.lines.map(line => line.url ? (
-                    <a href={line.url} style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</a>
-                  ) : (
-                    <span style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</span>)
-                  )}
-          </div>
-      ) : (
-          <ScheduleCase isFirstTop={index == 0 || index == 4} isFirstLeft={index2 == 0} debug={debug-- == 1} filter={this.props.filter} data={heure}/>))
-      )}
-        {this.state.msgBoxVisible && <MessageBox onClose={this.hideMessageBox} lines={this.state.msgBoxLines}/>}
-      </div>
-    );
-  }
-}
-
 class MessageBox extends Component {
   constructor(props) {
     super(props);
+    this.state = {visible: false};
+    this.hide = this.hide.bind(this);
+    MessageBox.instance = this;
+  }
+
+  static show(lines) {
+    MessageBox.instance.show(lines);
+  }
+
+  show(lines) {
+    this.setState({visible: true, lines: lines});
+  }
+
+  hide() {
+    this.setState({visible: false});
   }
 
   render() {
-    const lines = this.props.lines;
-    return (
-      <div id="msgBoxBg" onClick={this.props.onClose}>
+    const lines = this.state.lines;
+    return this.state.visible ? (
+      <div id="msgBoxBg" onClick={this.hide}>
         <div id="msgBox">
         {lines.map((line,index) => line.url ? (
           <a key={"msgBoxLine-"+index} href={line.url} target="_blank">{line.txt}</a>
@@ -268,49 +313,37 @@ class MessageBox extends Component {
         )}
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 
-class FilterChooser extends Component{
-  constructor(props) {
-    super(props);
-    this.state = {week: this.props.filter.week};
-    this.currentWeekTimeout = undefined;
-  }
-
-  weekChosen(week) {
-    this.setState({week: Number.parseInt(week)});
-    if(this.currentWeekTimeout) {
-      clearTimeout(this.currentWeekTimeout);
-    }
-    this.currentWeekTimeout = setTimeout(() => {
-      this.props.onFilterChanged("week", this.state.week);
-    }, 2000);
-  }
-
+/**
+ * Le composant FilterChooser regroupe tous les sous-composants servant à filtrer les données de l'emploi du temps en terme d'affichage
+ * FilterChooser component contains all the sub-components that are used for filtering the schedule data in terms of data display
+ */
+class FilterChooser extends Component {
   render() {
     return (
       <div id="filterBox">
         <h3>Filtres : </h3>
         <div id="groups">
           <h4>Groupe : </h4>
-          <div>
+          <div>   {/* TODO : Transformer ces divs en un nouveau composant ? */}
             <h5>1ere année :</h5>
               <div className="groupChooser">
-              {GROUPES.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 0, group: index})} className={this.props.filter.groups[0].includes(index) && !this.props.firstFilter ? "selected" : ""}>{gr}</div>)}
+              {GROUPES.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 0, group: index})} className={this.props.filter.groups[0].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
               </div>
             </div>
           <div>
             <h5>2nde année :</h5>
             <div className="groupChooser">
-              {GROUPES_2A.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.firstFilter ? "selected" : ""}>{gr}</div>)}
+              {GROUPES_2A.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
             </div>
           </div>
         </div>
         <div>
           <h4>Semaine : </h4>
-          <WeekSelector value={this.state.week} onWeekChanged={(value) => this.props.onFilterChanged("week", value)}/>
+          <WeekSelector week={this.props.filter.week} year={this.props.filter.year} onWeekChanged={(value) => this.props.onFilterChanged("week", value)}/>
         </div>
         <div>
           <h4>Professeur : </h4>
@@ -335,6 +368,11 @@ class FilterChooser extends Component{
   }
 }
 
+/**
+ * Main Application :
+ * - Load the Schedule data from IUT's server.
+ * 
+ */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -351,20 +389,20 @@ class App extends Component {
       groupFilter = [[0, 1, 2, 3, 4, 5, 6, 7],
                     [0, 1, 2, 3, 4, 5, 6, 7]];
 
-    this.state = {firstFilter: lastGroupFilter == undefined,
+    this.state = {isFirstFilter: lastGroupFilter == undefined,
                   edtData: [],
-                  filter: {
+                  filter: {       // Sortir ces attributs du filter ?
                     week: defaultWeek,
                     year: defaultYear,
                     groups: groupFilter,
-                    module: "TOUS",
-                    profNom: "TOUS",
-                    salle: "TOUTES"
+                    module: "TOUS",   // Current selected module
+                    profNom: "TOUS",  // Current selected prof
+                    salle: "TOUTES"   // Current selected room
                   },
-                  isMobile: false
+                  isMobile: false     // TRUE if screen width < 640
                  };
 
-    fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+defaultYear+"&week="+this.state.filter.week).then(data => data.text().then(txt => this.onDataLoaded(txt, defaultWeek, defaultYear))).catch(error => console.log(error));
+    this.loadData(defaultWeek, defaultYear);
 
     this.onWindowResized = this.onWindowResized.bind(this);
 
@@ -380,18 +418,24 @@ class App extends Component {
     */
   }
   
+  /**
+   * This function is used to track the screen width changes -> if the width goes under 640px, the mobile display is set
+   * @param {*} e Window Resized Event
+   */
   onWindowResized(e) {
     let isMobile = window.innerWidth < 640;
     if(this.state && this.state.isMobile != isMobile)
       this.setState({isMobile: isMobile});
   }
 
+  loadData(week, year) {
+    fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+year+"&week="+week).then(data => data.text().then(txt => this.onDataLoaded(txt, week, year))).catch(error => console.log(error));
+  }
+
   onDataLoaded(data, week, year) {
-    profs = ["TOUS"];
+    profs = ["TOUS"];   // A sortir du contexte global ?
     modules = ["TOUS"];
     salles = ["TOUTES"];
-
-    var showInfos = true;
 
     var edtData = [];
     var lines = data.split("\n");
@@ -405,25 +449,23 @@ class App extends Component {
       line = lines[i++];
     }
     
-    if(showInfos) {
-      line = lines[++i];//=2];
-      while(line) {
-        infosTbl.push(line.split(","));
-        line = lines[i++];
-      }
+    line = lines[++i];
+    while(line) {
+      infosTbl.push(line.split(","));
+      line = lines[i++];
     }
 
-    for(let i = 0; i < 7; i++) {    // Creation heures
+    for(let i = 0; i < 7; i++) {    // Schedule lines creation (hours)
       edtData[i] = [];
-      for(let j = 0; j < 5; j++) {    // Creation jours
+      for(let j = 0; j < 5; j++) {    // Schedule columns creation (days)
         if(i == 3) {
           edtData[i][j] = {lines: []};
           continue;
         } else
           edtData[i][j] = [];
-        for(let k = 0; k < 2; k++) {    // Creation promos
+        for(let k = 0; k < 2; k++) {    // Schedule sub cases lines creation (promos)
           edtData[i][j][k] = [];
-          for(let l = 0; l < 8; l++) {    // Creation groupes
+          for(let l = 0; l < 8; l++) {    // Schedule sub cases columns creation (groupes)
             edtData[i][j][k][l] = [];
           }
         }
@@ -433,11 +475,12 @@ class App extends Component {
     for(let i = 0; i < tbl.length; i++) {
       let jour = tbl[i][JOUR];
       let heure = tbl[i][HEURE];
-      if(heure >= 3)
+      if(heure >= 3)  // bricolage
         heure++;
       let promo = Number.parseInt(tbl[i][GPE_PROMO].replace("INFO", ""))-1;
       let groups = [];
       
+
       if(tbl[i][GPE_NOM] == "LP"){
         promo = 1;
         groups[0] = 7;
@@ -453,46 +496,46 @@ class App extends Component {
           let index = GROUPES2.indexOf(gr);
           groups.push(index);
           if(promo == 0 || (promo == 1 && gr != "4"))
-            groups.push(index+1);
+            groups.push(index+1);           // 4A uniquement, pas 4B car 4B <=> LP
         }
       }
+
+
       for(let group of groups) {
-        if(heure == 3)
-          console.error("wtf");
-        edtData[heure][jour][promo][group] = {module: tbl[i][MODULE],
+        edtData[heure][jour][promo][group] = {
+          module: tbl[i][MODULE],
           profNom: tbl[i][PROF_NOM],
           salle: tbl[i][ROOM],
           bgColor: tbl[i][COLOR_BG],
-          txtColor: tbl[i][COLOR_TXT]};
+          txtColor: tbl[i][COLOR_TXT]
+        };
 
-          if(!profs.includes(tbl[i][PROF_NOM]))
-            profs.push(tbl[i][PROF_NOM]);
+        if(!profs.includes(tbl[i][PROF_NOM]))
+          profs.push(tbl[i][PROF_NOM]);
 
-          if(!salles.includes(tbl[i][ROOM]))
-            salles.push(tbl[i][ROOM]);
+        if(!salles.includes(tbl[i][ROOM]))
+          salles.push(tbl[i][ROOM]);
 
-          if(!modules.includes(tbl[i][MODULE]))
-            modules.push(tbl[i][MODULE]);
+        if(!modules.includes(tbl[i][MODULE]))
+          modules.push(tbl[i][MODULE]);
 
         }
       }
 
-      if(showInfos) {
-        for(let i = 0; i < infosTbl.length; i++) {
-          let column = Number.parseInt(infosTbl[i][1]);
-          let line = Number.parseInt(infosTbl[i][3]) || 0;
-          if(!edtData[3][column].lines[line])
-            edtData[3][column].lines[line] = {};
-          edtData[3][column].lines[line].txt = infosTbl[i][4];
-          edtData[3][column].lines[line].fillColor = infosTbl[i][6];
-          edtData[3][column].lines[line].txtColor = infosTbl[i][7];
-          edtData[3][column].lines[line].url = infosTbl[i][5];
-        }
+      for(let i = 0; i < infosTbl.length; i++) {
+        let column = Number.parseInt(infosTbl[i][1]);
+        let line = Number.parseInt(infosTbl[i][3]) || 0;
+
+        if(!edtData[3][column].lines[line])
+          edtData[3][column].lines[line] = {};
+        edtData[3][column].lines[line].txt = infosTbl[i][4];
+        edtData[3][column].lines[line].fillColor = infosTbl[i][6];
+        edtData[3][column].lines[line].txtColor = infosTbl[i][7];
+        edtData[3][column].lines[line].url = infosTbl[i][5];
       }
 
       let days = [];
       let d = getDateOfWeek(week, year);
-      console.log(d);
       for(let i = 0; i < 5; i++) {
         let day = d.getUTCDate();
         let month = d.getUTCMonth()+1;
@@ -510,10 +553,10 @@ class App extends Component {
 
     onFilterChanged(prop, newValue) {
       var newFilter = this.state.filter;
-      var firstFilter = this.state.firstFilter;
+      var isFirstFilter = this.state.isFirstFilter;
       if(prop == "group") {
         var promo = newValue.promo, group = newValue.group;
-        if(this.state.firstFilter) {
+        if(this.state.isFirstFilter) {
           newFilter.groups[promo] = [group];
           newFilter.groups[promo==1?0:1] = [];
         }else {
@@ -525,13 +568,15 @@ class App extends Component {
           newFilter.groups[promo].sort();
         }
         localStorage.setItem("lastGroupFilter", JSON.stringify(newFilter.groups));
-        firstFilter = false;
+        isFirstFilter = false;
       } else if(prop == "week") {
-        fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+newValue.year+"&week="+newValue.week).then(data => data.text().then(txt => this.onDataLoaded(txt, newValue.week, newValue.year))).catch(error => console.log(error));
+        this.loadData(newValue.week, newValue.year);
       } else {
         newFilter[prop] = newValue;
       }
-      this.setState({filter: newFilter, firstFilter: firstFilter});
+      console.log("1", this.state.filter == newFilter);
+      // this.state.filter === newFilter -> TRUE
+      this.setState({filter: newFilter, isFirstFilter: isFirstFilter}); // Débile : this.setState({filter: this.state.filter})...
     }
 
     render() {
@@ -544,7 +589,10 @@ class App extends Component {
             <a href="https://github.com/Feavy/EDT-React" target="_blank">Code Source</a>
           </div>
           <FilterChooser filter={this.state.filter} onFilterChanged={this.onFilterChanged}/>
-          <Schedule days={this.state.days} isMobile={this.state.isMobile} filter={this.state.filter} edt={this.state.edtData} />
+          {this.state.days &&
+          <Schedule filter={this.state.filter} days={this.state.days} isMobile={this.state.isMobile} edt={this.state.edtData} />
+          }
+          <MessageBox/>
         </div>
         );
       }
