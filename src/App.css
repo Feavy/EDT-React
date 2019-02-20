@@ -37,6 +37,7 @@ body {
 
 .case {
   display: grid;
+  grid-template-columns: 1fr;
   border-right: 1px solid #444;
   border-bottom: 1px solid #444;
   min-height: 80px;
@@ -71,6 +72,7 @@ body {
 }
 
 .subCase {
+  min-height: 40px;
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -177,7 +179,7 @@ button {
   background-color: white;
   color: #444;
   border: 1px solid #444;
-  padding: 0 .1em 0 .1em;
+  padding: .2em .1em 0 .1em;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color .5s;

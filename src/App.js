@@ -38,10 +38,9 @@ ROOM_TYPE = 9,
 COLOR_BG = 10,
 COLOR_TXT = 11;
 
-const GROUPES = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
+const GROUPES = [["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"],
+                ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "LP"]];
 const GROUPES2 = ["1",     , "2",      , "3",      ,  "4"];
-
-const GROUPES_2A = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "LP"];
 
 var profs = ["TOUS"];
 var modules = ["TOUS"];
@@ -111,6 +110,8 @@ class WeekSelector extends Component {
       this.changeTimeout = setTimeout(() => {
         this.props.onWeekChanged({week: this.state.week, year: this.state.year});
       }, 500);
+    }else{
+      this.setState({week: newWeek});
     }
   }
 
@@ -118,7 +119,7 @@ class WeekSelector extends Component {
     return (
       <div>
         <button onClick={(e) => this.onWeekChanged(this.state.week-1)}><i class="material-icons">arrow_left</i></button>
-        <TextField className="input" type="number" value={this.state.week} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
+        <TextField className="input" type="number" min="-52" max="52" value={this.state.week} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
         <button class="button" onClick={(e) => this.onWeekChanged(this.state.week+1)}><i class="material-icons">arrow_right</i></button>
         <p>Année : <span style={{fontWeight: "bold"}}>{this.state.year}</span></p>
       </div>
@@ -139,6 +140,7 @@ class Schedule extends Component {
 
   render() {
     var debug = 1;
+    const headerPromo = this.props.filter.groups[0].length > 0 ? 0 : 1;
     return (
       <div id="schedule">
         
@@ -149,11 +151,11 @@ class Schedule extends Component {
           </div>
         )}
 
-        {// Affichage des labels de groupes :
+        {// Affichage des labels de groupes 1ere année :
         this.dayIndexes.map(id => 
-          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[0].length+", 1fr)"}}>
-            {this.props.filter.groups[0].map(index =>
-                  <span style={{textAlign: "center", overflow:"hidden"}} key={id+"-gr"+index}>{GROUPES[index]}</span>
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[headerPromo].length+", 1fr)"}}>
+            {this.props.filter.groups[headerPromo].map(index =>
+                  <span style={{textAlign: "center", overflow:"hidden"}} key={"1A"+id+"-gr"+index}>{GROUPES[headerPromo][index]}</span>
             )}
           </div>
         )}
@@ -162,7 +164,7 @@ class Schedule extends Component {
         this.props.edt.map((heure, index) =>
                             heure.map((jour, index2) =>
                                       index == 3 ? (  // 12h30 -> 14h15 (zone d'annonce)
-                                            <ScheduleInfoCase data={jour}/>
+                                            <ScheduleInfoCase data={jour} isMobile={this.props.isMobile}/>
                                       ) : (
                                             <ScheduleCase isFirstTop={index == 0 || index == 4}
                                                         isFirstLeft={index2 == 0} debug={debug-- == 1} filter={this.props.filter} data={jour}/>
@@ -170,6 +172,16 @@ class Schedule extends Component {
                                     )
                           )
         }
+
+        {// Affichage des labels de groupes 2nde année :
+          this.props.filter.groups[0].length > 0 &&
+          this.dayIndexes.map(id => 
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[1].length+", 1fr)"}}>
+            {this.props.filter.groups[1].map(index =>
+                  <span style={{textAlign: "center", overflow:"hidden"}} key={"2A"+id+"-gr"+index}>{GROUPES[1][index]}</span>
+            )}
+          </div>
+        )}
       </div>
     );
   }
@@ -187,8 +199,8 @@ class ScheduleInfoCase extends Component {
     const heure = this.props.data;
     return (
       <div /*key={index+";"+index2}*/ className="infoCase">
-      {heure.lines.length > 0 && this.props.isMobile ? <div /*key={index+";"+index2+"-i"}*/ className="infoButton" onClick={() => MessageBox.show(heure.lines)}><span>Infos</span></div> :
-      heure.lines.map(line => line.url ? (
+      {heure.length > 0 && this.props.isMobile ? <div /*key={index+";"+index2+"-i"}*/ className="infoButton" onClick={() => MessageBox.show(heure)}><span>Infos</span></div> :
+      heure.map(line => line.url ? (
               <a href={line.url} style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</a>
             ) : (
               <span style={{backgroundColor: line.fillColor, color: line.txtColor}}>{line.txt}</span>)
@@ -201,9 +213,6 @@ class ScheduleInfoCase extends Component {
 class ScheduleCase extends Component {
   constructor(props) {
     super(props);
-
-    this.updateData = this.updateData.bind(this);
-    this.updateData();
     
     this.classes = ["case"];
     if(this.props.isFirstLeft)
@@ -212,18 +221,24 @@ class ScheduleCase extends Component {
       this.classes.push("firstTop");
   }
 
-  updateData() {
+  getOpacity(groupe) {
+    const filter = this.props.filter;
+    return  (filter.module == "TOUS" || filter.module == groupe.module) &&
+            (filter.profNom == "TOUS" || filter.profNom == groupe.profNom) &&
+            (filter.salle == "TOUTES" || filter.salle == groupe.salle) ? 1 : 0.3;
+  }
 
-    // Déplacer ce calcul d'affichage ailleurs ??
+  render() {
+    const {filter} = this.props;
 
-    var data = this.props.data;
+    const data = this.props.data;
     for(let i = 0; i < data.length; i++) {
       var lastVisibleIndex = 0;      // Peut-être source de bugs ?
       for(let j = 0; j < data[i].length; j++) {
         let current = data[i][j];
-
+        
         current.visible = this.props.filter.groups[i].includes(j);
-        let c = Math.max(this.props.filter.groups[i].indexOf(j),this.props.filter.groups[i==0?1:0].indexOf(j))+1;
+        let c = this.props.filter.groups[i].indexOf(j)+1;
         current.columnStart = c;
         current.columnEnd = c;
         current.row = i+1;
@@ -246,36 +261,26 @@ class ScheduleCase extends Component {
 
       }
     }
-  }
 
-  componentWillReceiveProps(props) {
-    this.props = props;
-    this.updateData();
-  }
-
-  getOpacity(groupe) {
-    const filter = this.props.filter;
-    return  (filter.module == "TOUS" || filter.module == groupe.module) &&
-            (filter.profNom == "TOUS" || filter.profNom == groupe.profNom) &&
-            (filter.salle == "TOUTES" || filter.salle == groupe.salle) ? 1 : 0.3;
-  }
-
-  render() {
-    const filter = this.props.filter;
-    var groupsAmount = Math.max(this.props.filter.groups[0].length, this.props.filter.groups[1].length);
     return (
-      <div className={this.classes.join(" ")} style={{gridTemplateColumns: "repeat("+groupsAmount+", 1fr)"}}>
-        {this.props.data.map((promos, row) => promos.map((groupe, column) => filter.groups[row].includes(column) && groupe.visible ? (
-            <div className="subCase" style={{gridRow: groupe.row,
-                                            gridColumnStart: groupe.columnStart, gridColumnEnd: groupe.columnEnd,
-                                            backgroundColor: groupe.bgColor, color: groupe.txtColor,
-                                            opacity: this.getOpacity(groupe)}}>
-                <div>
-                <span>{groupe.module}</span>
-                <span>{groupe.profNom}</span>
-                <span>{groupe.salle}</span>
-                </div>
-            </div>): null /*(<div style={{gridRow: row+1, gridColumn: column+1}} className="subCase"></div>)*/))}
+      <div className={this.classes.join(" ")}>
+        {this.props.data.map((promos, row) =>
+        filter.groups[row].length != 0 ? (
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+filter.groups[row].length+", 1fr)"}}>
+            {promos.map((groupe, column) => filter.groups[row].includes(column) && groupe.visible ? (
+                <div className="subCase" style={{gridRow: groupe.row,
+                                                gridColumnStart: groupe.columnStart, gridColumnEnd: groupe.columnEnd,
+                                                backgroundColor: groupe.bgColor, color: groupe.txtColor,
+                                                opacity: this.getOpacity(groupe)}}>
+                    <div>
+                      <span>{groupe.module}</span>
+                      <span>{groupe.profNom}</span>
+                      <span>{groupe.salle}</span>
+                    </div>
+                </div>) : null)
+            }
+          </div>
+        ) : null)}
       </div>
     );
   }
@@ -331,13 +336,13 @@ class FilterChooser extends Component {
           <div>   {/* TODO : Transformer ces divs en un nouveau composant ? */}
             <h5>1ere année :</h5>
               <div className="groupChooser">
-              {GROUPES.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 0, group: index})} className={this.props.filter.groups[0].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
+              {GROUPES[0].map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 0, group: index})} className={this.props.filter.groups[0].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
               </div>
             </div>
           <div>
             <h5>2nde année :</h5>
             <div className="groupChooser">
-              {GROUPES_2A.map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
+              {GROUPES[1].map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
             </div>
           </div>
         </div>
@@ -382,6 +387,7 @@ class App extends Component {
     let groupFilter;
     
     var lastGroupFilter = localStorage.getItem("lastGroupFilter");
+    var lastBackup = localStorage.getItem("backup");
 
     if(lastGroupFilter) 
       groupFilter = JSON.parse(lastGroupFilter);
@@ -401,6 +407,10 @@ class App extends Component {
                   },
                   isMobile: false     // TRUE if screen width < 640
                  };
+
+    if(lastBackup) {
+      setTimeout(() => this.onDataLoaded(JSON.parse(lastBackup), defaultWeek, defaultYear, true), 0);
+    }
 
     this.loadData(defaultWeek, defaultYear);
 
@@ -432,7 +442,9 @@ class App extends Component {
     fetch("https://edt-relai.yo.fr/fetch.php?infos=1&year="+year+"&week="+week).then(data => data.text().then(txt => this.onDataLoaded(txt, week, year))).catch(error => console.log(error));
   }
 
-  onDataLoaded(data, week, year) {
+  onDataLoaded(data, week, year, isBackup) {
+    if(!isBackup)
+      localStorage.setItem("backup", JSON.stringify(data));
     profs = ["TOUS"];   // A sortir du contexte global ?
     modules = ["TOUS"];
     salles = ["TOUTES"];
@@ -458,11 +470,9 @@ class App extends Component {
     for(let i = 0; i < 7; i++) {    // Schedule lines creation (hours)
       edtData[i] = [];
       for(let j = 0; j < 5; j++) {    // Schedule columns creation (days)
-        if(i == 3) {
-          edtData[i][j] = {lines: []};
-          continue;
-        } else
           edtData[i][j] = [];
+          if(i == 3)
+            continue;
         for(let k = 0; k < 2; k++) {    // Schedule sub cases lines creation (promos)
           edtData[i][j][k] = [];
           for(let l = 0; l < 8; l++) {    // Schedule sub cases columns creation (groupes)
@@ -479,7 +489,6 @@ class App extends Component {
         heure++;
       let promo = Number.parseInt(tbl[i][GPE_PROMO].replace("INFO", ""))-1;
       let groups = [];
-      
 
       if(tbl[i][GPE_NOM] == "LP"){
         promo = 1;
@@ -489,7 +498,7 @@ class App extends Component {
         if(promo == 0)
           groups.push(7);
       } else if(tbl[i][GPE_NOM].length == 2) {
-        groups[0] = GROUPES.indexOf(tbl[i][GPE_NOM]);
+        groups[0] = GROUPES[0].indexOf(tbl[i][GPE_NOM]);
       } else {
         let grs = tbl[i][GPE_NOM].split("");
         for(let gr of grs) {
@@ -499,7 +508,6 @@ class App extends Component {
             groups.push(index+1);           // 4A uniquement, pas 4B car 4B <=> LP
         }
       }
-
 
       for(let group of groups) {
         edtData[heure][jour][promo][group] = {
@@ -518,7 +526,6 @@ class App extends Component {
 
         if(!modules.includes(tbl[i][MODULE]))
           modules.push(tbl[i][MODULE]);
-
         }
       }
 
@@ -526,12 +533,12 @@ class App extends Component {
         let column = Number.parseInt(infosTbl[i][1]);
         let line = Number.parseInt(infosTbl[i][3]) || 0;
 
-        if(!edtData[3][column].lines[line])
-          edtData[3][column].lines[line] = {};
-        edtData[3][column].lines[line].txt = infosTbl[i][4];
-        edtData[3][column].lines[line].fillColor = infosTbl[i][6];
-        edtData[3][column].lines[line].txtColor = infosTbl[i][7];
-        edtData[3][column].lines[line].url = infosTbl[i][5];
+        if(!edtData[3][column][line])
+          edtData[3][column][line] = {};
+        edtData[3][column][line].txt = infosTbl[i][4];
+        edtData[3][column][line].fillColor = infosTbl[i][6];
+        edtData[3][column][line].txtColor = infosTbl[i][7];
+        edtData[3][column][line].url = infosTbl[i][5];
       }
 
       let days = [];
@@ -574,13 +581,11 @@ class App extends Component {
       } else {
         newFilter[prop] = newValue;
       }
-      console.log("1", this.state.filter == newFilter);
       // this.state.filter === newFilter -> TRUE
       this.setState({filter: newFilter, isFirstFilter: isFirstFilter}); // Débile : this.setState({filter: this.state.filter})...
     }
 
     render() {
-      console.log(this.state.filter);
       return (
         <div className="App">
           <h1 id="title">Emploi du temps - IUT de Blagnac</h1>
