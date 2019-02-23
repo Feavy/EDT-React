@@ -2,6 +2,8 @@
 
 body {
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  margin: 8px 0 8px 0;
+  transition: all .5s;
 }
 
 #title {
@@ -12,7 +14,6 @@ body {
   position: absolute;
   right: 0px;
   top: 0px;
-  color: rgba(0, 0, 0, 0.8);
   height: 1.5em;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 1px;
@@ -29,27 +30,91 @@ body {
   color: #03A9F4;
 }
 
+#themeSelector {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border: 2px solid;
+  border-radius: 50%;
+  box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+#themeSelector>span{
+  font-size: 30px;
+  text-align: center;
+  padding-top: 1px;
+  width: 34px;
+  height: 28px;
+}
+
+#promos {
+  display: inline-block;
+}
+
+#promos>*{
+  display: inline-block;
+}
+
 #schedule {
   font-size: 10px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: auto repeat(5, 1fr) 40px;
+  grid-template-rows: auto auto 80px 80px 80px auto 80px 80px 80px auto;
+}
+
+.promos {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 0 .5em 0 .5em;
+}
+
+.promos>div>span{
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.heures {
+  margin-left: .5em;
+  position: relative;
+}
+
+.heures>.start{
+  position: absolute;
+  top: 10px;
+}
+
+.heures>.end {
+  position: absolute;
+  bottom: 10px;
 }
 
 .case {
   display: grid;
-  grid-template-columns: 1fr;
-  border-right: 1px solid #444;
-  border-bottom: 1px solid #444;
-  min-height: 80px;
+  grid-template-rows: 1fr;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
   transition: all .5s;
 }
 
 .case.firstLeft {
-  border-left: 1px solid #444;
+  border-left: 1px solid;
 }
 
 .case.firstTop {
-  border-top: 1px solid #444;
+  border-top: 1px solid;
+}
+
+.darkBorders{
+  border-color: #444 !important;
+}
+
+.lightBorders {
+  border-color: white !important;
 }
 
 .infoCase{
@@ -72,7 +137,6 @@ body {
 }
 
 .subCase {
-  min-height: 40px;
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -145,14 +209,14 @@ body {
 }
 
 #filterBox {
+  margin-left: 8px;
   padding: 0px 20px 20px 20px;
 }
 
 #filterBox > div{
+  float: left;
   margin-left: 1em;
   margin-right: 2em;
-  display: inline-block;
-  float: left;
 }
 
 #filterBox::after{
@@ -288,4 +352,14 @@ input[type=number] {
   .groupChooser {
     width: 100%;
   }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.whiteTxt{
+  color: white !important;
+  border-bottom: 1px solid white;
 }
