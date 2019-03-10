@@ -133,11 +133,11 @@ class WeekSelector extends Component {
 
   render() {
     return (
-      <div class="weekSelector">
+      <div>
         <button onClick={(e) => this.onWeekChanged(this.state.week-1)}><Icon>arrow_left</Icon></button>
         <TextField InputProps={{
           classes: {
-              root: this.props.isDarkMode ? "whiteTxt whiteBorder" : ""
+              root: this.props.isDarkMode ? "whiteTxt" : ""
           }
         }} className="input" type="number" min="-52" max="52" value={this.state.week} onChange={(e) => this.onWeekChanged(Number.parseInt(e.target.value))}/>
         <button class="button" onClick={(e) => this.onWeekChanged(this.state.week+1)}><Icon>arrow_right</Icon></button>
@@ -161,11 +161,14 @@ class Schedule extends Component {
   render() {
     var debug = 1;
     const headerPromo = this.props.filter.groups[0].length > 0 ? 0 : 1;
-    const style = {textAlign: "center", overflow:"hidden", flexGrow: 1};
+    const style = {textAlign: "center", overflow:"hidden"};
 
     const elems = [];
 
+    console.log(this.props.edt);
+
     for(let i = 0; i < this.props.edt.length; i++) {  // A travers les heures
+      console.log(i);
       for(let j = 0; j < this.props.edt[i].length; j++) { // A travers les jours
         if(j == 0)
           if(i != 3) {
@@ -184,9 +187,9 @@ class Schedule extends Component {
           }else
             elems.push(<div></div>);
         if(i == 3)
-          elems.push(<ScheduleInfoCase data={this.props.edt[i][j]} isDarkMode={this.props.isDarkMode} isMobile={this.props.isMobile}/>)
+          elems.push(<ScheduleInfoCase data={this.props.edt[i][j]} isMobile={this.props.isMobile}/>)
         else
-          elems.push(<ScheduleCase animation={!this.props.isMobile} isDarkMode={this.props.isDarkMode} isFirstTop={i == 0 || i == 4}
+          elems.push(<ScheduleCase isDarkMode={this.props.isDarkMode} isFirstTop={i == 0 || i == 4}
             isFirstLeft={j == 0} debug={debug-- == 1} filter={this.props.filter} data={this.props.edt[i][j]}/>)
         if(j == this.props.edt[i].length-1)
           elems.push(
@@ -199,42 +202,44 @@ class Schedule extends Component {
     }
 
     return (
-      <div id="schedule">
-        
-        <div></div>
-        {// Affichage des dates : 
-        this.dayIndexes.map((id, index) => 
-          <div>
-            <h2 key={id} style={centerStyle}>{id+" "+this.props.days[index]}</h2>
-          </div>
-        )}
-        <div></div>
+      <div>
+        <div id="schedule">
+          
+          <div></div>
+          {// Affichage des dates : 
+          this.dayIndexes.map((id, index) => 
+            <div>
+              <h2 key={id} style={centerStyle}>{id+" "+this.props.days[index]}</h2>
+            </div>
+          )}
+          <div></div>
 
-        <div></div>
-        {// Affichage des labels de groupes 1ere année :
-        this.dayIndexes.map(id => 
-          <div style={{display: "flex"}}>
-            {this.props.filter.groups[headerPromo].map(index =>
-                  <span style={style} key={"1A"+id+"-gr"+index}>{GROUPES[headerPromo][index]}</span>
-            )}
-          </div>
-        )}
-        <div></div>
-        
-        {// Affichage des cases :
-          elems
-        }
-
-        <div></div>
-        {// Affichage des labels de groupes 2nde année :
-          this.props.filter.groups[0].length > 0 &&
+          <div></div>
+          {// Affichage des labels de groupes 1ere année :
           this.dayIndexes.map(id => 
-          <div style={{display: "flex"}}>
-            {this.props.filter.groups[1].map(index =>
-                  <span style={style} key={"2A"+id+"-gr"+index}>{GROUPES[1][index]}</span>
-            )}
-          </div>
-        )}
+            <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[headerPromo].length+", 1fr)"}}>
+              {this.props.filter.groups[headerPromo].map(index =>
+                    <span style={style} key={"1A"+id+"-gr"+index}>{GROUPES[headerPromo][index]}</span>
+              )}
+            </div>
+          )}
+          <div></div>
+          
+          {// Affichage des cases :
+            elems
+          }
+
+          <div></div>
+          {// Affichage des labels de groupes 2nde année :
+            this.props.filter.groups[0].length > 0 &&
+            this.dayIndexes.map(id => 
+            <div style={{display: "grid", gridTemplateColumns: "repeat("+this.props.filter.groups[1].length+", 1fr)"}}>
+              {this.props.filter.groups[1].map(index =>
+                    <span style={style} key={"2A"+id+"-gr"+index}>{GROUPES[1][index]}</span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -250,7 +255,6 @@ class ScheduleInfoCase extends Component {
 
   render() {
     const heure = this.props.data;
-
     return (
       <div /*key={index+";"+index2}*/ className="infoCase">
       {heure.length > 0 && this.props.isMobile ? <div /*key={index+";"+index2+"-i"}*/ className="infoButton" onClick={() => MessageBox.show(heure)}><span>Infos</span></div> :
@@ -270,6 +274,12 @@ class ScheduleCase extends Component {
     
     this.classes = ["case"];
 
+    if(props.isDarkMode) {
+      this.classes.push("lightBorders");
+    } else {
+      this.classes.push("darkBorders");
+    }
+
     if(props.isFirstLeft)
       this.classes.push("firstLeft");
     if(props.isFirstTop)
@@ -287,48 +297,58 @@ class ScheduleCase extends Component {
   render() {
     const {filter} = this.props;
 
-    var animation = this.props.animation ? "all .5s" : ""
-
     const data = this.props.data;
     for(let i = 0; i < data.length; i++) {
-      var lastIndex;      // Peut-être source de bugs ?
+      var lastVisibleIndex = 0;      // Peut-être source de bugs ?
       for(let j = 0; j < data[i].length; j++) {
-        var current = data[i][j];
-        current.width = 0;
-        current.visible = false;
-
-        if(j == 0 || current.profNom != data[i][j-1].profNom) {
-          lastIndex = j;
-          current.visible = true;
+        let current = data[i][j];
+        
+        current.visible = this.props.filter.groups[i].includes(j);
+        let c = this.props.filter.groups[i].indexOf(j)+1;
+        current.columnStart = c;
+        current.columnEnd = c;
+        current.row = i+1;
+        if(current.row == 2 && this.props.filter.groups[0].length == 0)
+          current.row = 1;
+        if(j == 0) {
+          if(current.visible)
+          lastVisibleIndex = j;
+          continue;
         }
 
-        if (this.props.filter.groups[i].includes(j))
-          data[i][lastIndex].width++
+        if(current.profNom && current.visible && current.profNom == data[i][lastVisibleIndex].profNom) {
+          current.columnStart = data[i][lastVisibleIndex].visible ? data[i][lastVisibleIndex].columnStart : data[i][j].columnStart;
+          data[i][lastVisibleIndex].visible = false;
+          current.columnEnd++;    // Bricolage
+        }
+
+        if(current.visible)
+          lastVisibleIndex = j;
 
       }
     }
 
-    let selectedGroupAmount = 0;
-    if(filter.groups[0].length > 0)
-      selectedGroupAmount++;
-      if(filter.groups[1].length > 0)
-      selectedGroupAmount++;
+    if(this.props.isDarkMode) {
+      this.classes[1] = "lightBorders";
+    } else {
+      this.classes[1] = "darkBorders";
+    }
 
     return (
       <div className={this.classes.join(" ")}>
         {this.props.data.map((promos, row) =>
-        true ? (
-          <div style={{display: "flex", transition: animation, flexGrow: filter.groups[row].length > 0 ? 1 : 0}}>
-            {promos.map((groupe, column) => groupe.visible ? (
-                <div className="subCase" style={{flexGrow: groupe.width, flexBasis: 0, transition: animation,
+        filter.groups[row].length != 0 ? (
+          <div style={{display: "grid", gridTemplateColumns: "repeat("+filter.groups[row].length+", 1fr)"}}>
+            {promos.map((groupe, column) => filter.groups[row].includes(column) && groupe.visible ? (
+                <div className="subCase" style={{gridRow: groupe.row,
+                                                gridColumnStart: groupe.columnStart, gridColumnEnd: groupe.columnEnd,
                                                 backgroundColor: groupe.bgColor, color: groupe.txtColor,
                                                 opacity: this.getOpacity(groupe)}}>
-                    
-                      <div style={{top: selectedGroupAmount == 1 ? "27%" : "0%", height: groupe.width === 0 ? "0px" : "40px", transition: animation}}>
-                        <span>{groupe.module}</span>
-                        <span>{groupe.profNom}</span>
-                        <span>{groupe.salle}</span>
-                      </div>
+                    <div>
+                      <span>{groupe.module}</span>
+                      <span>{groupe.profNom}</span>
+                      <span>{groupe.salle}</span>
+                    </div>
                 </div>) : null)
             }
           </div>
@@ -361,9 +381,7 @@ class MessageBox extends Component {
   render() {
     const lines = this.state.lines;
     return this.state.visible ? (
-      <div id="msgBoxContainer">
-        <div id="msgBoxBg" onClick={this.hide}>
-        </div>
+      <div id="msgBoxBg" onClick={this.hide}>
         <div id="msgBox">
         {lines.map((line,index) => line.url ? (
           <a key={"msgBoxLine-"+index} href={line.url} target="_blank">{line.txt}</a>
@@ -372,7 +390,6 @@ class MessageBox extends Component {
         )}
         </div>
       </div>
-
     ) : null;
   }
 }
@@ -397,12 +414,7 @@ class FilterChooser extends Component {
           <div>
             <h5>2nde année :</h5>
             <div className="groupChooser">
-              {GROUPES[1].map((gr, index) => index < 7 && (<div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>))}
-            </div>
-          </div>
-          <div id="lp">
-            <div className="groupChooser">
-              <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: 7})} className={this.props.filter.groups[1].includes(7) && !this.props.isFirstFilter ? "selected" : ""}>LP</div>
+              {GROUPES[1].map((gr, index) => <div onClick={() => this.props.onFilterChanged("group", {promo: 1, group: index})} className={this.props.filter.groups[1].includes(index) && !this.props.isFirstFilter ? "selected" : ""}>{gr}</div>)}
             </div>
           </div>
         </div>
@@ -412,19 +424,19 @@ class FilterChooser extends Component {
         </div>
         <div>
           <h4>Professeur : </h4>
-          <Select classes={{root: this.props.isDarkMode ? "whiteTxt whiteBorder" : "", icon: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.profNom} onChange={(e) => this.props.onFilterChanged("profNom", e.target.value)}>
+          <Select  classes={{root: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.profNom} onChange={(e) => this.props.onFilterChanged("profNom", e.target.value)}>
             {profs.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
           </Select>
         </div>
         <div>
           <h4>Salle : </h4>
-          <Select classes={{root: this.props.isDarkMode ? "whiteTxt whiteBorder" : "", icon: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.salle} onChange={(e) => this.props.onFilterChanged("salle", e.target.value)}>
+          <Select classes={{root: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.salle} onChange={(e) => this.props.onFilterChanged("salle", e.target.value)}>
             {salles.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
           </Select>
         </div>
         <div>
           <h4>Module : </h4>
-          <Select classes={{root: this.props.isDarkMode ? "whiteTxt whiteBorder" : "", icon: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.module} onChange={(e) => this.props.onFilterChanged("module", e.target.value)}>
+          <Select classes={{root: this.props.isDarkMode ? "whiteTxt" : ""}} value={this.props.filter.module} onChange={(e) => this.props.onFilterChanged("module", e.target.value)}>
             {modules.map(nom => <MenuItem value={nom}>{nom}</MenuItem>)}
           </Select>
         </div>
@@ -435,11 +447,19 @@ class FilterChooser extends Component {
 
 class ThemeSelector extends Component {
   render() {
-    return (
-      <div id="themeSelector" onClick={() => this.props.onThemeChanged(!this.props.isDarkMode)}>
-        {this.props.isDarkMode ? (<Icon>wb_sunny</Icon>) : (<Icon>brightness_3</Icon>)}
-      </div>
-    );
+    if(this.props.isDarkMode) {
+      return (
+        <div id="themeSelector" className="lightBorders" onClick={() => this.props.onThemeChanged(false)}>
+          <Icon>wb_sunny</Icon>
+        </div>
+      );
+    }else{
+      return (
+        <div id="themeSelector" className="darkBorders" onClick={() => this.props.onThemeChanged(true)}>
+          <Icon>brightness_3</Icon>
+        </div>
+      );
+    }
   }
 }
 
@@ -668,6 +688,7 @@ class App extends Component {
     }
 
     adaptGroupsPreferredSelectedAmount(promo) {
+      console.log("adapt");
       var rep = false;
       while(this.state.filter.groups[promo].length*24*5+30+40 > window.innerWidth) {
         this.state.filter.groups[promo].shift();
@@ -694,10 +715,10 @@ class App extends Component {
 
     render() {
       return (
-        <div className="App" style={{borderColor: this.state.isDarkMode ? "white" : "#444"}}>
+        <div className="App">
           <h1 id="title">Emploi du temps - IUT de Blagnac</h1>
           <div id="info">
-            <p>Alpha 3.1</p>
+            <p>Alpha 3.0</p>
             <a href="https://github.com/Feavy/EDT-React" target="_blank">Code Source</a>
           </div>
           <ThemeSelector isDarkMode={this.state.isDarkMode} onThemeChanged={this.setTheme}/>
