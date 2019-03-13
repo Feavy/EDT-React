@@ -2,7 +2,7 @@
   "name": "edt",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://feavy.tk/edt",
+  "homepage": "https://feavy.netlify.com/edt",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "react": "^16.8.1",
