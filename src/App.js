@@ -35,10 +35,10 @@ global.salles = ["TOUTES"];
 
 const ID_COURS = 0,
 NUM_COURS = 1,
-MODULE = 2,
+PROF_NOM = 2,
 GPE_NOM = 3,
 GPE_PROMO = 4,
-PROF_NOM = 5,
+MODULE = 5,
 ROOM_TYPE = 6,
 ROOM = 7,
 
