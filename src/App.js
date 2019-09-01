@@ -35,16 +35,23 @@ global.salles = ["TOUTES"];
 
 const ID_COURS = 0,
 NUM_COURS = 1,
-PROF_NOM = 2,
+MODULE = 2,
 GPE_NOM = 3,
 GPE_PROMO = 4,
-MODULE = 5,
-JOUR = 6,
-HEURE = 7,
-ROOM = 8,
-ROOM_TYPE = 9,
-COLOR_BG = 10,
-COLOR_TXT = 11;
+PROF_NOM = 5,
+ROOM_TYPE = 6,
+ROOM = 7,
+
+COLOR_BG = 9,
+COLOR_TXT = 10,
+JOUR = 11,
+HEURE = 12;
+
+const JOURS = {'m': 0, 'tu': 1, 'w': 2, 'th': 3, 'f': 4};
+var HEURES = [];
+for(let heure of [8, 9.5, 11, 14.25, 15.75, 17.25]) {
+  HEURES.push(heure * 60);
+}
 
 function getWeekNumber(d) {
   // Copy date so don't modify original
@@ -204,10 +211,10 @@ class App extends Component {
         }
       }
     }
-    
     for(let i = 0; i < tbl.length; i++) {
-      let jour = tbl[i][JOUR];
-      let heure = tbl[i][HEURE];
+      let jour = JOURS[tbl[i][JOUR]];
+      let heure = HEURES.indexOf(Number.parseInt(tbl[i][HEURE]));
+      console.log(heure);
       if(heure >= 3)  // bricolage
         heure++;
       let promo = Number.parseInt(tbl[i][GPE_PROMO].replace("INFO", ""))-1;
