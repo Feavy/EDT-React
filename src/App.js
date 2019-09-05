@@ -1,8 +1,8 @@
 /**
  * <!> Attention <!>
  * 
- * Le code est pour l'instant mal organisé, il
- * sera refactorisé et commenté très prochainement.
+ * Le code est pour l'instant hideux, il
+ * sera refactorisé et commenté très prochainement (lol).
  * 
  * 
  * Ci-dessous le code source d'une webapp servant à
@@ -214,7 +214,6 @@ class App extends Component {
     for(let i = 0; i < tbl.length; i++) {
       let jour = JOURS[tbl[i][JOUR]];
       let heure = HEURES.indexOf(Number.parseInt(tbl[i][HEURE]));
-      console.log(heure);
       if(heure >= 3)  // bricolage
         heure++;
       let promo = Number.parseInt(tbl[i][GPE_PROMO].replace("INFO", ""))-1;
