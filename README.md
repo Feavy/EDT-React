@@ -1,11 +1,13 @@
+
 # FlopEDT WebApp
 Système de visualisation (codé en ReactJS) de l'emploi du temps généré par logiciel [FlopEdt](http://www.flopedt.org/).
 
-## Futur
+## To Do
 
 ### Bêta 1.0 (Version mobile)
+- **Refactoriser le code**
 - Nouvelle organisation
-- Animations
+- Animations ✔ *(Alpha 3.0)*
 - Refaire avec uniquement des flexbox
 - Changement de jour / semaine en swipant latéralement
 - Choix mode jour / semaine avec affichage en conséquence
@@ -14,7 +16,7 @@ Système de visualisation (codé en ReactJS) de l'emploi du temps généré par 
 - Ajouter formulaire de rapport de bug & de proposition d'idées
 - Sélectionneur de semaine en bas de l'écran sur mobile (transparent)
 - Indicateur visuel du cours actuel (cf. Google Agenda)
-- Dé-sélection automatique de groupes si trop déjà sélectionnés pour une promo
+- Dé-sélection automatique de groupes si trop déjà sélectionnés pour une promo ✔ *(Alpha 3.0)*
 
 ### 1.0
 - Afficher les infos du cours cliqué en plus des salles disponibles
@@ -22,7 +24,6 @@ Système de visualisation (codé en ReactJS) de l'emploi du temps généré par 
 - Afficher si une régénération est prévue
 - Salles disponibles
 - Indicateur de dernier cours dans la salle (pour éteindre les PC)
-- Refactoriser le code
 - Signification des sigles
 - Indicateur du type de cours
 - Mode hors ligne  
