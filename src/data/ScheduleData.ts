@@ -1,9 +1,9 @@
 import DayData from "./DayData";
-import Day from "./Day";
+import {Day} from "./Day";
 import CaseData from "./CaseData";
 
 export default class SceduleData {
-    private daysData:DayData[] = new Array(5);
+    private daysData:DayData[] = [new DayData(), new DayData(), new DayData(), new DayData(), new DayData()];
     constructor() {
         
     }
