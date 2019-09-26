@@ -2,14 +2,16 @@ import CaseData from "./CaseData";
 import HourData from "./HourData";
 
 export default class DayData {
-    hoursData = new Map();
+    private _hoursData = new Map<number, HourData>();
 
     set(startTime:number, promo:string, group:string, caseData:CaseData) {
-        if(!this.hoursData.has(startTime))
-            this.hoursData.set(startTime, new HourData(startTime, startTime+90));
+        if(!this._hoursData.has(startTime))
+            this._hoursData.set(startTime, new HourData(startTime, startTime+90));
         
-        this.hoursData.get(startTime).set(promo, group, caseData);
+        this._hoursData.get(startTime)!.set(promo, group, caseData);
     }
 
-
+    public get hoursData():HourData[] {
+        return Array.from(this._hoursData.values()).sort((a, b) => a.startTime - b.startTime);
+    }
 }

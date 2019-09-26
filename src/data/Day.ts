@@ -6,14 +6,23 @@ export enum Day {
     FRIDAY 
 }
 
-var m:Map<string, Day> = new Map<string, Day>([
-    ['m', Day.MONDAY],
-    ['tu', Day.TUESDAY],
-    ['w', Day.WEDNESDAY],
-    ['th', Day.THURSDAY],
-    ['fr', Day.FRIDAY]
-]);
-
 export function dayFromString(value:string):Day {
-    return m.get(value) || Day.MONDAY;
+    switch (value) {
+        case 'm': return Day.MONDAY;
+        case 'tu': return Day.TUESDAY;
+        case 'w': return Day.WEDNESDAY;
+        case 'th': return Day.THURSDAY;
+        case 'f': return Day.FRIDAY;
+        default: return Day.MONDAY;
+    }
+}
+
+export function dayToString(day:Day):string {
+    switch (day) {
+        case Day.MONDAY: return 'Lundi';
+        case Day.TUESDAY: return 'Mardi';
+        case Day.WEDNESDAY: return 'Mercredi';
+        case Day.THURSDAY: return 'Jeudi';
+        case Day.FRIDAY: return 'Vendredi';
+    }
 }

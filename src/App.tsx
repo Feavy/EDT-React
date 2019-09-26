@@ -1,34 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 import FlOpDataFetcher from './io/FlOpDataFetcher'
 import ScheduleData from './data/ScheduleData';
+import Schedule from './ui/Schedule';
 
-const App: React.FC = () => {
-
-  console.log("HELLO");
-  FlOpDataFetcher.fetch(38, 2019, (data:ScheduleData) => {
-    console.log(data);
-  });
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type AppState = {
+  scheduleData: ScheduleData
 }
 
-export default App;
+export default class App extends Component<{}, AppState> {
+  constructor(props: {}, state: AppState) {
+    super(props, state);
+    this.state = {scheduleData: new ScheduleData()};
+    FlOpDataFetcher.fetch(39, 2019, (data:ScheduleData) => {
+      this.setState({scheduleData: data});
+    });
+  }
+
+  render() {
+    return (
+      <>  
+        <h1>Emploi du temps - IUT de Blagnac</h1>
+        <Schedule data={this.state.scheduleData}/>
+      </>
+    );
+  }
+}
