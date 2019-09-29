@@ -11,25 +11,22 @@ export default class ScheduleCase extends Component<{data: HourData}> {
     render() {
         const {data} = this.props;
 
-        const hourData:Map<string, Map<string, CaseData>> = data.data;
-
         for(let promo of ["INFO1", "INFO2"]) {
-            var lastGroup:string = "1A";
-            var last:string|undefined;
+            var lastCase:CaseData|undefined = undefined;
             for(let group of ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]) {
                 var current:CaseData|undefined = data.getCaseData(promo, group);
                 if(current) {
-                    current.width = 0;
+                    current.width = 1;
                     current.visible = false;
             
-                    if(group === "1A" || last && current && data.getCaseData(promo, last) &&  current.teacherName != data.getCaseData(promo, last)!.teacherName) {
-                        lastGroup = group;
-                        current.visible = true;
+                    if(lastCase && lastCase!.teacherName === current.teacherName) {
+                        lastCase!.width++;
+                        current.width = 0; 
+                    } else{
+                        lastCase = current;
                     }
             
-                    current.width++;
                 }
-                last = group;
             }
         }
 

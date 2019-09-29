@@ -24,10 +24,10 @@ export default class HourData {
             this._data.set(promo, new Map());
         if(group.length == 1) {
             this._data.get(promo)!.set(group+"A", caseData);
-            this._data.get(promo)!.set(group+"B", caseData);
+            this._data.get(promo)!.set(group+"B", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
         }else if(group == "CE"){
             for(let gr of ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]) {
-                this._data.get(promo)!.set(gr, caseData);
+                this._data.get(promo)!.set(gr, new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
             }
         }else
             this._data.get(promo)!.set(group, caseData);

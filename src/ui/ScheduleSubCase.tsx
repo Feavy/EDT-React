@@ -16,11 +16,10 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
             );
 
         return (
-            <div className="schedule-sub-case" style={{backgroundColor: data.bgColor, color: data.txtColor}}>
+            <div className="schedule-sub-case" style={{backgroundColor: data.bgColor, color: data.txtColor, width: (data.width/8)*100+"%"}}>
                 <p>{data.unitName}</p>
                 <p>{data.teacherName}</p>
                 <p>{data.roomName}</p>
-                <p>{data.width}</p>
             </div>
         );
     }
