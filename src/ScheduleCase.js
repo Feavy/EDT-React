@@ -63,7 +63,7 @@ export default class ScheduleCase extends Component {
                         <div style={{top: selectedGroupAmount == 1 ? "27%" : "0%", height: groupe.width === 0 ? "0px" : "40px", transition: animation}}>
                           <span>{groupe.module}</span>
                           <span>{groupe.profNom}</span>
-                          <span>{groupe.salle}</span>
+                          <span>{groupe.salle === "A011" ? <strong>EXAMEN</strong> : groupe.salle}</span>
                         </div>
                   </div>) : null)
               }
