@@ -7,7 +7,6 @@ export default class CaseData {
     private _bgColor:Color = "0x000000";
     private _txtColor:Color = "0x000000";
 
-    public visible:boolean = true;
     public width:number = 1;
 
     constructor(unitName:string, teacherName:string, roomName:string, bgColor:Color, txtColor:Color) {
@@ -24,3 +23,5 @@ export default class CaseData {
     public get bgColor():Color { return this._bgColor; }
     public get txtColor():Color { return this._txtColor; }
 }
+
+export const EMPTY:CaseData = new CaseData("", "", "", "", "");

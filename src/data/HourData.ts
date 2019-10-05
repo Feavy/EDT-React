@@ -1,4 +1,4 @@
-import CaseData from "./CaseData";
+import CaseData, { EMPTY } from "./CaseData";
 
 export default class HourData {
     _startTime:number = 0;
@@ -37,9 +37,13 @@ export default class HourData {
         return this._data;
     }
 
-    public getCaseData(promo:string, group:string):CaseData|undefined {
+    public getCaseData(promo:string, group:string):CaseData {
         if(!this._data.has(promo))
-            return undefined;
-        return this._data.get(promo)!.get(group);
+            return EMPTY;
+
+        if(!this._data.get(promo)!.get(group))
+            this._data.get(promo)!.set(group, new CaseData("", "", "", "", ""));
+        
+        return this._data.get(promo)!.get(group)!;
     }
 }

@@ -10,6 +10,7 @@
 }
 
 .schedule-sub-case {
+  transition: width .5s;
   display: inline-block;
   width: 12.5%;
   font-size: 10px;
