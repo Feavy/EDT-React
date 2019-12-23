@@ -1,8 +1,13 @@
 
-# FlopEDT WebApp
-Système de visualisation (codé en ReactJS) de l'emploi du temps généré par logiciel [FlopEdt](http://www.flopedt.org/).
 
-## To Do
+# FlopEDT WebApp
+Système de visualisation, codé en ReactJS, de l'emploi du temps généré par le logiciel [FlopEdt](http://www.flopedt.org/).
+
+Implémentation : [https://feavy.netlify.com/edt/](https://feavy.netlify.com/edt/).
+
+## Screen
+![enter image description here](https://image.prntscr.com/image/02F7cTrxQLWZKHnO8CsUAw.png)
+## Roadmap
 
 ### Bêta 1.0 (Version mobile)
 - **Refactoriser le code**
