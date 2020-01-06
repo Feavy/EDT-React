@@ -1,10 +1,20 @@
 import React, {Component} from 'react';
+import MessageBox from './MessageBox';
 
 export default class ScheduleCase extends Component {
     constructor(props) {
       super(props);
       
       this.classes = ["case"];
+      this.busyRooms = [];
+
+      const data = this.props.data;
+      for(let i = 0; i < data.length; i++) {
+        for(let j = 0; j < data[i].length; j++) {
+          if(!this.busyRooms.includes(data[i][j].salle) && data[i][j].salle)
+            this.busyRooms.push(data[i][j].salle);
+        }
+      }
   
       if(props.isFirstLeft)
         this.classes.push("firstLeft");
@@ -51,7 +61,7 @@ export default class ScheduleCase extends Component {
         selectedGroupAmount++;
   
       return (
-        <div className={this.classes.join(" ")}>
+        <div className={this.classes.join(" ")} onClick={() => MessageBox.show(["Salles occupées :", this.busyRooms.join(", ")])}>
           {this.props.data.map((promos, row) =>
           true ? (
             <div style={{display: "flex", transition: animation, flexGrow: filter.groups[row].length > 0 ? 1 : 0}}>

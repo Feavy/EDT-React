@@ -9,6 +9,8 @@ export default class MessageBox extends Component {
     }
   
     static show(lines) {
+      if(!lines[0].txt)
+        lines = lines.map(line => {return {txt: line};});
       MessageBox.instance.show(lines);
     }
   
