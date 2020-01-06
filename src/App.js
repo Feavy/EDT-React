@@ -317,6 +317,7 @@ class App extends Component {
         this.loadData(newValue.week, newValue.year);
       } else {
         newFilter[prop] = newValue;
+        newFilter.groups = [[], []];
       }
       this.setState({filter: newFilter, isFirstFilter: isFirstFilter}); // Débile : this.setState({filter: this.state.filter})...
     }
