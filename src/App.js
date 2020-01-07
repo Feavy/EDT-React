@@ -27,7 +27,7 @@ import FilterChooser from './FilterChooser';
 import MessageBox from './MessageBox';
 import { GROUPES, GROUPES2 } from './Globals';
 
-const version = "Alpha 3.2";
+const version = "Alpha 4.0";
 
 global.profs = ["TOUS"];
 global.modules = ["TOUS"];
@@ -97,31 +97,31 @@ class App extends Component {
     
     this.onFilterChanged = this.onFilterChanged.bind(this);
     this.setTheme = this.setTheme.bind(this);
-
-    let groupFilter;
     
-    var lastGroupFilter = localStorage.getItem("lastGroupFilter");
+    var lastFilter = localStorage.getItem("lastFilter");
     var lastBackup = localStorage.getItem("backup");
     var lastWeek = localStorage.getItem("week");
     var darkMode = localStorage.getItem("isDarkMode");
 
-    if(lastGroupFilter) 
-      groupFilter = JSON.parse(lastGroupFilter);
-    else
-      groupFilter = [[0, 1, 2, 3, 4, 5, 6, 7],
-                    [0, 1, 2, 3, 4, 5, 6, 7]];
+    var filter = {       // Sortir ces attributs du filter ?
+      week: defaultWeek,
+      year: defaultYear,
+      groups:  [[0, 1, 2, 3, 4, 5, 6, 7],
+      [0, 1, 2, 3, 4, 5, 6, 7]],
+      module: "TOUS",   // Current selected module
+      profNom: "TOUS",  // Current selected prof
+      salle: "TOUTES"   // Current selected room
+    };
+
+    if(lastFilter)
+      filter = JSON.parse(lastFilter);
+
+    console.log(lastFilter);
 
     this.state = {isDarkMode: darkMode != undefined,
-                  isFirstFilter: lastGroupFilter == undefined,
+                  isFirstFilter: lastFilter == undefined,
                   edtData: [],
-                  filter: {       // Sortir ces attributs du filter ?
-                    week: defaultWeek,
-                    year: defaultYear,
-                    groups: groupFilter,
-                    module: "TOUS",   // Current selected module
-                    profNom: "TOUS",  // Current selected prof
-                    salle: "TOUTES"   // Current selected room
-                  },
+                  filter: filter,
                   isMobile: false     // TRUE if screen width < 640
                  };
 
@@ -216,6 +216,9 @@ class App extends Component {
         }
       }
     }
+
+    var lastRooms = [];
+
     for(let i = 0; i < tbl.length; i++) {
       let jour = JOURS[tbl[i][JOUR]];
       let heure = HEURES.indexOf(Number.parseInt(tbl[i][HEURE]));
@@ -251,6 +254,11 @@ class App extends Component {
           bgColor: tbl[i][COLOR_BG],
           txtColor: tbl[i][COLOR_TXT]
         };
+        if(!lastRooms[heure])
+          lastRooms[heure] = [];
+        if(!lastRooms[heure][jour])
+          lastRooms[heure][jour] = [];
+        lastRooms[heure][jour][tbl[i][ROOM]] = edtData[heure][jour][promo][group];
         if(!global.profs.includes(tbl[i][PROF_NOM]))
           global.profs.push(tbl[i][PROF_NOM]);
 
@@ -261,6 +269,20 @@ class App extends Component {
           global.modules.push(tbl[i][MODULE]);
         }
       }
+
+      /*console.log(lastRooms);
+
+      for(let lastRoom of lastRooms) {
+        if(lastRoom) {
+        for(let lastRoomd of lastRoom) {
+          if(lastRoomd) {
+          for(let day of lastRoomd) {
+            console.log(day);
+          }
+        }
+        }
+      }
+      }*/
 
       for(let i = 0; i < infosTbl.length; i++) {
         let column = Number.parseInt(infosTbl[i][1]);
@@ -296,6 +318,9 @@ class App extends Component {
       var newFilter = this.state.filter;
       var isFirstFilter = this.state.isFirstFilter;
       if(prop == "group") {
+        newFilter.profNom = "TOUS";
+        newFilter.salle = "TOUTES";
+        newFilter.module = "TOUS";
         var promo = newValue.promo, group = newValue.group;
         if(this.state.isFirstFilter) {
           newFilter.groups[promo] = [group];
@@ -310,15 +335,18 @@ class App extends Component {
           }
           newFilter.groups[promo].sort();
         }
-        localStorage.setItem("lastGroupFilter", JSON.stringify(newFilter.groups));
         isFirstFilter = false;
       } else if(prop == "week") {
         this.selectedWeek = newValue.week;
         this.loadData(newValue.week, newValue.year);
       } else {
+        newFilter.profNom = "TOUS";
+        newFilter.salle = "TOUTES";
+        newFilter.module = "TOUS";
         newFilter[prop] = newValue;
         newFilter.groups = [[], []];
       }
+      localStorage.setItem("lastFilter", JSON.stringify(newFilter));
       this.setState({filter: newFilter, isFirstFilter: isFirstFilter}); // Débile : this.setState({filter: this.state.filter})...
     }
 

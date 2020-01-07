@@ -43,11 +43,12 @@ export default class ScheduleCase extends Component {
             current.visible = true;
           }
   
-          if (this.props.filter.groups[i].includes(j) && this.props.filter.profNom == "TOUS" && this.props.filter.salle == "TOUTES"
-          || this.props.filter.salle == current.salle || this.props.filter.profNom == current.profNom)
-            data[i][lastIndex].width++
-            if(this.props.filter.profNom != "TOUS" && this.props.filter.salle != "TOUTES")
+          if (this.props.filter.groups[i].includes(j) && this.props.filter.profNom == "TOUS" && this.props.filter.salle == "TOUTES" && this.props.filter.module == "TOUS"
+          || this.props.filter.salle == current.salle || this.props.filter.profNom == current.profNom || this.props.filter.module == current.module) {
+            data[i][lastIndex].width++;
+            if(this.props.filter.profNom != "TOUS" || this.props.filter.salle != "TOUTES" || this.props.filter.module != "TOUS")
               visibles[i]++;
+          }
         }
       }
   
@@ -66,7 +67,7 @@ export default class ScheduleCase extends Component {
                   <div className="subCase" style={{flexGrow: groupe.width, flexBasis: 0, transition: animation,
                                                   backgroundColor: groupe.bgColor, color: groupe.txtColor}}>
                       
-                        <div style={{top: selectedGroupAmount == 1 ? "27%" : "0%", height: groupe.width === 0 ? "0px" : "40px", transition: animation}}>
+                        <div style={{top: selectedGroupAmount == 1 || visibles[row] > 0 ? "27%" : "0%", height: groupe.width === 0 ? "0px" : "40px", transition: animation}}>
                           <span>{groupe.module}</span>
                           <span>{groupe.profNom}</span>
                           <span>{groupe.salle === "A011" ? <strong>EXAMEN</strong> : groupe.salle}</span>
