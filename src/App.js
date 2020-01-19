@@ -27,7 +27,7 @@ import FilterChooser from './FilterChooser';
 import MessageBox from './MessageBox';
 import { GROUPES, GROUPES2 } from './Globals';
 
-const version = "Alpha 4.0";
+const version = "Alpha 4.1";
 
 global.profs = ["TOUS"];
 global.modules = ["TOUS"];
@@ -117,6 +117,9 @@ class App extends Component {
       filter = JSON.parse(lastFilter);
 
     console.log(lastFilter);
+
+    filter.week = defaultWeek;
+    filter.year = defaultYear;
 
     this.state = {isDarkMode: darkMode != undefined,
                   isFirstFilter: lastFilter == undefined,
