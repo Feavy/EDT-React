@@ -6,16 +6,18 @@ export default class ScheduleCase extends Component {
       super(props);
       
       this.classes = ["case"];
-      this.busyRooms = [];
+      const busyRooms = [];
 
       const data = this.props.data;
       for(let i = 0; i < data.length; i++) {
         for(let j = 0; j < data[i].length; j++) {
-          if(!this.busyRooms.includes(data[i][j].salle) && data[i][j].salle)
-            this.busyRooms.push(data[i][j].salle);
+          if(!busyRooms.includes(data[i][j].salle) && data[i][j].salle)
+            busyRooms.push(data[i][j].salle);
         }
       }
   
+      this.state = {busyRooms: busyRooms};
+
       if(props.isFirstLeft)
         this.classes.push("firstLeft");
       if(props.isFirstTop)
@@ -23,9 +25,24 @@ export default class ScheduleCase extends Component {
   
     }
   
+    componentWillReceiveProps(newProps) {
+      const busyRooms = [];
+
+      const data = newProps.data;
+      for(let i = 0; i < data.length; i++) {
+        for(let j = 0; j < data[i].length; j++) {
+          if(!busyRooms.includes(data[i][j].salle) && data[i][j].salle)
+            busyRooms.push(data[i][j].salle);
+        }
+      }
+
+      this.setState({busyRooms: busyRooms});
+    }
+
     render() {
       const {filter} = this.props;
-  
+      const {busyRooms} = this.state;
+
       var animation = this.props.animation ? "all .5s" : ""
   
       var visibles = [0, 0];
@@ -59,7 +76,7 @@ export default class ScheduleCase extends Component {
         selectedGroupAmount++;
   
       return (
-        <div className={this.classes.join(" ")} onClick={() => MessageBox.show(["Salles occupées :", this.busyRooms.join(", ")])}>
+        <div className={this.classes.join(" ")} onClick={() => MessageBox.show(["Salles occupées :", busyRooms.join(", ")])}>
           {this.props.data.map((promos, row) =>
           true ? (
             <div style={{display: "flex", transition: animation, flexGrow: filter.groups[row].length > 0 || filter.groups[row].length == 0 && visibles[row] > 0 ? 1 : 0}}>
