@@ -26,10 +26,10 @@ export default class FlOpDataFetcher {
             line = lines[i++];
             const elem:CSVElement = new CSVElement(keys, line.split(','));
 
-            const caseData = new CaseData(elem.get('module'), elem.get('prof_nom'), elem.get('room'), elem.get('color_bg'), elem.get('color_txt'));
+            const caseData = new CaseData(elem.get('module'), elem.get('prof_name'), elem.get('room'), elem.get('color_bg'), elem.get('color_txt'));
 
             if(elem.get('start_time') !== '???')
-                scheduleData.set(dayFromString(elem.get('day')), Number.parseInt(elem.get('start_time')), elem.get('gpe_promo'), elem.get('gpe_nom'), caseData);
+                scheduleData.set(dayFromString(elem.get('day')), Number.parseInt(elem.get('start_time')), elem.get('gpe_promo'), elem.get('gpe_name'), caseData);
         }
     
         return scheduleData;

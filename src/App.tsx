@@ -20,7 +20,7 @@ export default class App extends Component<{}, AppState> {
       scheduleData: new ScheduleData(),
       filter: new Filter()
     };
-    FlOpDataFetcher.fetch(41, 2019, (data:ScheduleData) => {
+    FlOpDataFetcher.fetch(9, 2020, (data:ScheduleData) => {
       this.setState({scheduleData: data});
     });
   }
