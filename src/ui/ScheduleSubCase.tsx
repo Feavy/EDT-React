@@ -8,6 +8,10 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
 
     private _onClick = (e:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         let target:HTMLDivElement = e.target as HTMLDivElement;
+        target.style.transition = "none";
+        target.style.visibility = "hidden";
+        target.classList.remove("shadow");
+        target.removeChild(target.lastChild!);
         let big:HTMLDivElement = document.createElement("div");
         big.style.position = "fixed";
         big.style.left = target.getBoundingClientRect().left+"px";
