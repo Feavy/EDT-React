@@ -6,6 +6,31 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
         super(props);
     }
 
+    private _onClick = (e:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        let target:HTMLDivElement = e.target as HTMLDivElement;
+        let big:HTMLDivElement = document.createElement("div");
+        big.style.position = "fixed";
+        big.style.left = target.offsetLeft+"px";
+        big.style.top = target.offsetTop+"px";
+        big.style.backgroundColor = target.style.backgroundColor;
+        big.className = "big";
+        big.style.width = target.clientWidth+"px";
+        big.style.height = target.clientHeight+"px";
+        big.style.zIndex = "11";
+        big.style.borderRadius = "5px";
+        big.style.transform = "scale(1.1)";
+        big.style.transition = "all .5s";
+        big.style.boxShadow = "0px 10px 10px rgba(0,0,0,0.3)"
+        document.body.appendChild(big);
+        console.log("click");
+        setTimeout(function() {
+            big.style.left = "calc(50% - 250px)";
+            big.style.top = "30%";
+            big.style.width = "500px";
+            big.style.height = "40%";
+        }, 0);
+    };
+
     render() {
         const {data, width} = this.props;
 
@@ -16,16 +41,10 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
             );
 
         return (
-            <div className="schedule-sub-case"
+            <div onClick={this._onClick} className={"schedule-sub-case "+ ((data.width && data.bgColor) && "shadow")}
             style={{backgroundColor: data.bgColor,
                     color: data.txtColor,
                     width: width === 0 ? 0 : (data.width/width)*100+"%",
-                    borderTop: data.width && data.bgColor ? "2px solid "+data.lighterBgColor : "",
-                    borderLeft: data.width && data.bgColor ? "2px solid "+data.lighterBgColor : "",
-                    borderBottom: data.width && data.bgColor ? "3px solid "+data.darkerBgColor : "",
-                    borderRight: data.width && data.bgColor ? "3px solid "+data.darkerBgColor : "",
-                    boxSizing: "border-box",
-                    borderRadius: "2px"
             }}>
                 <p>{data.unitName}</p>
                 <p>{data.teacherName}</p>

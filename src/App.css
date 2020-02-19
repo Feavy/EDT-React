@@ -1,31 +1,27 @@
-body {
-    background-color: #E0E5EC;
-}
-
 input[type="submit"] {
-    background-color: #E0E5EC;
+    background-color: #2196f3;
     border: none;
     cursor: pointer;
     padding: 1em;
+    border-radius: 4px;
+    border-top: 3px solid #64b5f6;
+    border-left: 3px solid #64b5f6;
+    border-right: 3px solid #1976d2;
+    border-bottom: 3px solid #1976d2;
+    color: white;
+    font-weight: bold;
 }
 
 input[type="submit"]:hover {
-    box-shadow: inset 3px 3px 5px rgb(163, 177, 198, 0.6), inset -3px -3px 5px rgba(255, 255, 255, 0.5);
+    box-shadow: inset 3px 3px 0px rgb(163, 177, 198, 0.6), inset -3px -3px 0px rgba(255, 255, 255, 0.5);
 }
 
-.buttonGroup {
-    background-color: #E0E5EC;
-    border-radius: 10px;
-    overflow: hidden;
-    border: none;
-    cursor: pointer;
-    box-shadow: 3px 3px 7px rgb(163, 177, 198, 0.6), -3px -3px 7px rgba(255, 255, 255, 0.5);
-    display: inline-block;
+.schedule {
+    display: flex;
 }
 
 .schedule-column {
-    width: 20%;
-    display: inline-block;
+    flex: 1 1 0px;
     box-sizing: border-box;
     vertical-align: top;
 }
@@ -44,6 +40,33 @@ h1 {
     text-align: center;
     overflow: hidden;
     height: 45px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.schedule-sub-case.shadow::after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    transition: all .5s;
+}
+
+.schedule-sub-case.shadow:hover::after {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.schedule-sub-case.shadow:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.schedule-sub-case.shadow {
+    cursor: pointer;
+    box-shadow: inset 2px 2px rgba(255, 255, 255, 0.2), inset -3px -3px rgba(0, 0, 0, 0.2);
 }
 
 .schedule-sub-case>p {
