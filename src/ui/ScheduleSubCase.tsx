@@ -10,8 +10,8 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
         let target:HTMLDivElement = e.target as HTMLDivElement;
         let big:HTMLDivElement = document.createElement("div");
         big.style.position = "fixed";
-        big.style.left = target.offsetLeft+"px";
-        big.style.top = target.offsetTop+"px";
+        big.style.left = target.getBoundingClientRect().left+"px";
+        big.style.top = target.getBoundingClientRect().top+"px";
         big.style.backgroundColor = target.style.backgroundColor;
         big.className = "big";
         big.style.width = target.clientWidth+"px";
