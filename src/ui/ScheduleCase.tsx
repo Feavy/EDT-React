@@ -33,7 +33,8 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
                     }
                 } else {
                     current.width = 0;
-                    lastCase = current;
+                    if(!lastCase || lastCase.teacherName !== current.teacherName)
+                        lastCase = current;
                 }
             }
         }
