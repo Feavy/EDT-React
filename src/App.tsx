@@ -49,18 +49,27 @@ export default class App extends Component<{}, AppState> {
     console.log("added", modal);
   }
 
+  removeModal(modal:any) {
+    this.setState((prevState) => {
+      prevState.modals.splice(prevState.modals.indexOf(modal), 1);
+      return prevState;
+    });
+  }
+
   render() {
     const {scheduleData, filter, modals} = this.state;
 
     return (
-      <>  
+      <div>
+        <div id="status"><a href="https//github.com/feavy/EDT-React">Code Source</a> v 1.0</div>
         <h1>Emploi du temps - IUT de Blagnac</h1>
+        <p id="reloaded">RELOADED</p>
         <FilterChanger filter={filter} onChange={this._onFilterChange}/>
         <Schedule filter={filter} data={scheduleData}/>
         {modals.map(modal => (
             modal
         ))}
-      </>
+      </div>
     );
   }
 }

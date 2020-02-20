@@ -43,9 +43,16 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
 
         return (
             <div className="schedule-case">
-                {groups.map(group => <ScheduleSubCase width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
-                <br/>
+                {
+                filter.isPromoVisible("INFO1") && (
+                    <div className="schedule-case-row">
+                    {groups.map(group => <ScheduleSubCase width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
+                    </div>
+                )
+                }
+                <div className="schedule-case-row" style={{maxHeight: !filter.isPromoVisible("INFO2") ? "0px" : ""}}>
                 {groups.map(group => <ScheduleSubCase width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
+                </div>
             </div>
         );
     }

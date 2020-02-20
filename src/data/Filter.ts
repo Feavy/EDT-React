@@ -21,4 +21,10 @@ export default class Filter {
         }
         return false;
     }
+
+    public isPromoVisible(promo: string) {
+        if(promo === "INFO1" || promo === "INFO2")
+            return this._unvisibleGroups[promo].length !== 8;
+        return false;
+    }
 }
