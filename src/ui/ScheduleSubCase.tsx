@@ -1,38 +1,32 @@
-import React, {Component} from 'react';
+import React, {Component, ComponentElement} from 'react';
 import CaseData from '../data/CaseData';
+
+import App from "../App";
+import Modal from "./Modal";
 
 export default class ScheduleSubCase extends Component<{data: CaseData|undefined, width:number}> {
     constructor(props: {data:CaseData|undefined, width:number}) {
         super(props);
     }
 
-    private _onClick = (e:React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        let target:HTMLDivElement = e.target as HTMLDivElement;
+    private _onClick = (target:HTMLDivElement, data:CaseData) => {
         target.style.transition = "none";
         target.style.visibility = "hidden";
         target.classList.remove("shadow");
         target.removeChild(target.lastChild!);
-        let big:HTMLDivElement = document.createElement("div");
-        big.style.position = "fixed";
-        big.style.left = target.getBoundingClientRect().left+"px";
-        big.style.top = target.getBoundingClientRect().top+"px";
-        big.style.backgroundColor = target.style.backgroundColor;
-        big.className = "big";
-        big.style.width = target.clientWidth+"px";
-        big.style.height = target.clientHeight+"px";
-        big.style.zIndex = "11";
-        big.style.borderRadius = "5px";
-        big.style.transform = "scale(1.1)";
-        big.style.transition = "all .5s";
-        big.style.boxShadow = "0px 10px 10px rgba(0,0,0,0.3)"
-        document.body.appendChild(big);
-        console.log("click");
-        setTimeout(function() {
-            big.style.left = "calc(50% - 250px)";
-            big.style.top = "30%";
-            big.style.width = "500px";
-            big.style.height = "40%";
-        }, 0);
+        const mod:React.ComponentElement<Modal, any> = (
+        <Modal  left={target.getBoundingClientRect().left+"px"}
+                top={target.getBoundingClientRect().top+"px"}
+                width={target.clientWidth+"px"}
+                height={target.clientHeight+"px"}
+                color={target.style.backgroundColor!}>
+            <div style={{textAlign: "center", color: data.txtColor}}>
+                <h1>{data.unitName}</h1>
+                <h1>{data.teacherName}</h1>
+                <h1>{data.roomName}</h1>
+            </div>
+        </Modal>);
+        App.get().addModal(mod);
     };
 
     render() {
@@ -45,7 +39,7 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
             );
 
         return (
-            <div onClick={this._onClick} className={"schedule-sub-case "+ ((data.width && data.bgColor) && "shadow")}
+            <div onClick={(e) => this._onClick(e.target as HTMLDivElement, data)} className={"schedule-sub-case "+ ((data.width && data.bgColor) && "shadow")}
             style={{backgroundColor: data.bgColor,
                     color: data.txtColor,
                     width: width === 0 ? 0 : (data.width/width)*100+"%",

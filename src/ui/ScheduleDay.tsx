@@ -11,7 +11,6 @@ export default class ScheduleDay extends Component<{day:Day, data: DayData, filt
 
     render() {
         const {day, data, filter} = this.props;
-        console.log(day,data);
         return (
             <div className="schedule-column">
                 <h2 className="column-title">{dayToString(day)}</h2>
