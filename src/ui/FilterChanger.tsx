@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import Filter from "../data/Filter";
 
-export default class FilterChanger extends Component<{filter:Filter, onChange:(newFilter:Filter) => void}, {}> {
+import App from "../App";
+
+export default class FilterChanger extends Component<{filter:Filter, week:number, onChange:(newFilter:Filter) => void}, {}> {
 
     private toggledButton:string = "undefined";
 
-    constructor(props:{filter:Filter, onChange:(newFilter:Filter) => void}) {
+    constructor(props:{filter:Filter, week:number, onChange:(newFilter:Filter) => void}) {
         super(props);
         setInterval(function() {
             
@@ -21,10 +23,8 @@ export default class FilterChanger extends Component<{filter:Filter, onChange:(n
         this.props.onChange(this.props.filter);
     }
 
-
-
     render() {
-        const {filter} = this.props;
+        const {filter, week} = this.props;
         return (
             <div id="filters">
                 {["INFO1", "INFO2"].map(promo => (
@@ -32,7 +32,7 @@ export default class FilterChanger extends Component<{filter:Filter, onChange:(n
                     <div className="filterBlock">
                         <h2>{promo}</h2>
                         <div className="buttonGroup">
-                        {["1A", "1B", "2A", "2B", "3A", "3B", "4A"].map(group => (
+                        {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"].map(group => {return !(promo == "INFO2" && group == "4B") && (
                             <input type="submit"
                             onMouseDown={(e) => this.toggleGroup(promo, group)}
                             onMouseEnter={(e) => {
@@ -51,7 +51,7 @@ export default class FilterChanger extends Component<{filter:Filter, onChange:(n
                             }}
                             value={group}
                             className={filter.isGroupVisible(promo, group) ? "active" : ""}/>
-                        ))}
+                        )})}
                         </div>
                     </div>
 
@@ -83,9 +83,9 @@ export default class FilterChanger extends Component<{filter:Filter, onChange:(n
                 <div className="filterBlock">
                     <h2>Semaine</h2>
                     <div className="buttonGroup">
-                    <input type="submit" value="◀" className="active"/>
-                    <span id="weekLbl">9</span>
-                    <input type="submit" value="▶" className="active"/>
+                    <input type="submit" value="◀" className="active" onClick={() => App.get().previousWeek()}/>
+                    <span id="weekLbl">{week}</span>
+                    <input type="submit" value="▶" className="active" onClick={() => App.get().nextWeek()}/>
                     </div>
                 </div>
 

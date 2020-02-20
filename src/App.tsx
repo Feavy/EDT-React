@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import FlOpDataFetcher from './io/FlOpDataFetcher'
@@ -8,12 +7,15 @@ import Schedule from './ui/Schedule';
 import Filter from './data/Filter';
 import FilterChanger from './ui/FilterChanger';
 
+import ToggleLightDark from './ui/ToggleLightDark';
+
 import Modal from "./ui/Modal";
 
 type AppState = {
   scheduleData: ScheduleData;
   filter:Filter;
   modals:React.ComponentElement<any, Modal>[];
+  week: number;
 }
 
 export default class App extends Component<{}, AppState> {
@@ -24,11 +26,15 @@ export default class App extends Component<{}, AppState> {
     this.state = {
       scheduleData: new ScheduleData(),
       filter: new Filter(),
-      modals: []
+      modals: [],
+      week: 9
     };
-    FlOpDataFetcher.fetch(9, 2020, (data:ScheduleData) => {
+    FlOpDataFetcher.fetch(this.state.week, 2020, (data:ScheduleData) => {
       this.setState({scheduleData: data});
     });
+
+    window.addEventListener("resize", this.onWindowResized);
+    this.onWindowResized();
 
     App.app = this;
   }
@@ -46,25 +52,63 @@ export default class App extends Component<{}, AppState> {
       prevState.modals.push(modal);
       return prevState;
     });
-    console.log("added", modal);
   }
 
-  removeModal(modal:any) {
+  public removeModal(modal:any) {
     this.setState((prevState) => {
       prevState.modals.splice(prevState.modals.indexOf(modal), 1);
       return prevState;
     });
   }
 
+  public nextWeek() {
+    this.setState(prev => {
+      FlOpDataFetcher.fetch(prev.week+1, 2020, (data:ScheduleData) => {
+        this.setState({scheduleData: data});
+      });
+      return {week: prev.week+1};
+    });
+  }
+
+  public previousWeek() {
+    this.setState(prev => {
+      FlOpDataFetcher.fetch(prev.week-1, 2020, (data:ScheduleData) => {
+        this.setState({scheduleData: data});
+      });
+      return {week: prev.week-1};
+    });
+  }
+
+  private onWindowResized = () => {
+    let isMobile = window.innerWidth < 640;
+    //if(this.state && this.state.isMobile != isMobile)
+     // this.setState({isMobile: isMobile});
+    var r1 = this.adaptGroupsPreferredSelectedAmount("INFO1");
+    var r2 = this.adaptGroupsPreferredSelectedAmount("INFO2");
+    if(r1 || r2)
+      this.setState({filter: this.state.filter}); // (lol)
+  }
+
+  private adaptGroupsPreferredSelectedAmount(promo:string) {
+    var rep = false;
+    const groups = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
+    while((8-this.state.filter.hiddenGroupsAmount(promo))*24*5+30+40 > window.innerWidth) {
+      this.state.filter.hideGroup(promo, groups.pop()!);
+      rep = true;
+    }
+    return rep;
+  }
+
   render() {
-    const {scheduleData, filter, modals} = this.state;
+    const {scheduleData, filter, modals, week} = this.state;
 
     return (
       <div>
-        <div id="status"><a href="https//github.com/feavy/EDT-React">Code Source</a> v 1.0</div>
+        <ToggleLightDark/>
+        <div id="status"><a href="https://github.com/feavy/EDT-React" target="_blank">Code Source</a> v 1.0</div>
         <h1>Emploi du temps - IUT de Blagnac</h1>
         <p id="reloaded">RELOADED</p>
-        <FilterChanger filter={filter} onChange={this._onFilterChange}/>
+        <FilterChanger filter={filter} onChange={this._onFilterChange} week={week}/>
         <Schedule filter={filter} data={scheduleData}/>
         {modals.map(modal => (
             modal

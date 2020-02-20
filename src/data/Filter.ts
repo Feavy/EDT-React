@@ -3,7 +3,8 @@ export default class Filter {
 
     public hideGroup(promo:string, group:string) {
         if(promo === "INFO1" || promo === "INFO2") {
-            this._unvisibleGroups[promo].push(group);
+            if(!this._unvisibleGroups[promo].includes(group))
+                this._unvisibleGroups[promo].push(group);
         }
     }
 
@@ -26,5 +27,11 @@ export default class Filter {
         if(promo === "INFO1" || promo === "INFO2")
             return this._unvisibleGroups[promo].length !== 8;
         return false;
+    }
+
+    public hiddenGroupsAmount(promo: string) : number {
+        if(promo === "INFO1" || promo === "INFO2")
+            return this._unvisibleGroups[promo].length;
+        return 0;
     }
 }

@@ -8,7 +8,7 @@ type ModalProps = {
     width: string;
     height: string;
     color: Color;
-    onHide?: () => {};
+    onHide?: () => void;
 }
 
 export default class Modal extends Component<ModalProps, any> {
@@ -48,11 +48,10 @@ export default class Modal extends Component<ModalProps, any> {
             });
         }, 0);
         setTimeout(() => {
+            if(this.props.onHide)
+                this.props.onHide();
             App.get().removeModal(this);
         }, 500)
-        if(this.props.onHide) {
-            this.props.onHide();
-        }
     }
 
     render() {
@@ -67,7 +66,9 @@ export default class Modal extends Component<ModalProps, any> {
                 height: height,
                 backgroundColor: color
             }}>
+                <div className="modalContent">
                 {children}
+                </div>
             </div>
             <div id="modalBg" style={{background: "rgba(0, 0, 0, "+opacity+")"}} onClick={() => this.hide()}></div>
             </>

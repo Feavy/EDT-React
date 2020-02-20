@@ -13,6 +13,7 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
         const {data, filter} = this.props;
 
         const maxWidth = {"INFO1": 0, "INFO2": 0};
+        const height = {"INFO1": "50%", "INFO2" : "50%"};
 
         for(let promo of ["INFO1", "INFO2"]) {
             var lastCase:CaseData|undefined = undefined;
@@ -41,16 +42,24 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
 
         const groups:string[] = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]; 
 
+        if(!filter.isPromoVisible("INFO1")) {
+            height.INFO1 = "0%";
+            height.INFO2 = "100%";
+        }else if(!filter.isPromoVisible("INFO2")){
+            height.INFO1 = "100%";
+            height.INFO2 = "0%";
+        }
+
         return (
             <div className="schedule-case">
-                {
-                filter.isPromoVisible("INFO1") && (
-                    <div className="schedule-case-row">
-                    {groups.map(group => <ScheduleSubCase width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
-                    </div>
-                )
-                }
-                <div className="schedule-case-row" style={{maxHeight: !filter.isPromoVisible("INFO2") ? "0px" : ""}}>
+                <div className="schedule-case-row" style={
+                    {height: height["INFO1"]}
+                }>
+                {groups.map(group => <ScheduleSubCase width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
+                </div>
+                <div className="schedule-case-row" style={
+                    {height: height["INFO2"]}
+                }>
                 {groups.map(group => <ScheduleSubCase width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
                 </div>
             </div>

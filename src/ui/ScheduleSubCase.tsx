@@ -13,13 +13,22 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
         target.style.transition = "none";
         target.style.visibility = "hidden";
         target.classList.remove("shadow");
-        target.removeChild(target.lastChild!);
+
         const mod:React.ComponentElement<Modal, any> = (
         <Modal  left={target.getBoundingClientRect().left+"px"}
                 top={target.getBoundingClientRect().top+"px"}
                 width={target.clientWidth+"px"}
                 height={target.clientHeight+"px"}
-                color={target.style.backgroundColor!}>
+                color={target.style.backgroundColor!}
+                onHide={() => {
+                    target.style.transform = "scale(1.1)"
+                    target.style.visibility = "";
+                    target.classList.add("shadow");
+                    setTimeout(function() {
+                        target.style.transition = "all .5s";
+                        target.style.transform = ""
+                    }, 0);
+                }}>
             <div style={{textAlign: "center", color: data.txtColor}}>
                 <h1>{data.unitName}</h1>
                 <h1>{data.teacherName}</h1>
@@ -39,14 +48,16 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
             );
 
         return (
-            <div onClick={(e) => this._onClick(e.target as HTMLDivElement, data)} className={"schedule-sub-case "+ ((data.width && data.bgColor) && "shadow")}
+            <div onClick={(e) => data.unitName && this._onClick(e.target as HTMLDivElement, data)} className={"schedule-sub-case "+ ((data.width && data.bgColor) && "shadow")}
             style={{backgroundColor: data.bgColor,
                     color: data.txtColor,
                     width: width === 0 ? 0 : (data.width/width)*100+"%",
             }}>
-                <p>{data.unitName}</p>
-                <p>{data.teacherName}</p>
-                <p>{data.roomName}</p>
+                <div className="subCaseContent">
+                    <p>{data.unitName}</p>
+                    <p>{data.teacherName}</p>
+                    <p>{data.roomName}</p>
+                </div>
             </div>
         );
     }
