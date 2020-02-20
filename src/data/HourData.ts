@@ -20,17 +20,30 @@ export default class HourData {
     }
 
     set(promo:string, group:string, caseData:CaseData) {
+        if(promo == "APSIO")
+            promo = "INFO2";
         if(!this._data.has(promo))
             this._data.set(promo, new Map());
-        if(group.length == 1) {
-            this._data.get(promo)!.set(group+"A", caseData);
-            this._data.get(promo)!.set(group+"B", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
-        }else if(group == "CE"){
-            for(let gr of ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]) {
+
+        if(group == "LP"){
+            this._data.get(promo)!.set("4B", caseData);
+        }else if(group == "CE") {
+            const groups = ["1A", "1B", "2A", "2B", "3A", "3B", "4A"];
+            if(promo == "INFO1")
+                groups.push("4B");
+            for(let gr of groups) {
                 this._data.get(promo)!.set(gr, new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
             }
-        }else
+        } else if(group.length == 2) {
             this._data.get(promo)!.set(group, caseData);
+        } else {
+            let grs = group.split("");
+            for(let gr of grs) {
+                this._data.get(promo)!.set(gr+"A", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
+                if(!(promo === "INFO2" && gr === "4"))
+                    this._data.get(promo)!.set(gr+"B", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
+            }
+        }
     }
 
     public get data():Map<string, Map<string, CaseData>> {

@@ -3,8 +3,17 @@ import ScheduleData from '../data/ScheduleData';
 import ScheduleDay from './ScheduleDay';
 import Filter from '../data/Filter';
 
-export default class Schedule extends Component<{data:ScheduleData, filter:Filter}, {}> {
-    constructor(props: {data:ScheduleData, filter:Filter}) {
+import {getDateOfWeek} from '../utils/DateUtils';
+
+type ScheduleProps = {
+    data:ScheduleData;
+    filter:Filter;
+    week: number;
+    year: number;
+}
+
+export default class Schedule extends Component<ScheduleProps, {}> {
+    constructor(props: ScheduleProps) {
         super(props);
     }
 
@@ -17,7 +26,15 @@ export default class Schedule extends Component<{data:ScheduleData, filter:Filte
         ["15h45", "17h10"],
         ["17h15", "18h40"]];
 
-        const {data, filter} = this.props;
+        const {data, filter, week, year} = this.props;
+
+        const dates:Date[] = [];
+        for(var i = 0; i < 5; i++) {
+            const date = getDateOfWeek(week, year);
+            date.setUTCDate(date.getUTCDate()+i+1);
+            dates[i] = date;
+        }
+
         return (
             <div className="schedule">
                 <div>
@@ -29,7 +46,7 @@ export default class Schedule extends Component<{data:ScheduleData, filter:Filte
                         </div>
                     ))}
                 </div>
-                {data.daysData.map((day, i) => <ScheduleDay day={i} data={day} filter={filter} key={i}/>)}
+                {data.daysData.map((day, i) => <ScheduleDay date={dates[i]} day={i} data={day} filter={filter} key={i}/>)}
                 <div>
                     <h2>&nbsp;</h2>
                     {hours.map(hour => (

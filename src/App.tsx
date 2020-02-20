@@ -16,6 +16,7 @@ type AppState = {
   filter:Filter;
   modals:React.ComponentElement<any, Modal>[];
   week: number;
+  year: number;
 }
 
 export default class App extends Component<{}, AppState> {
@@ -27,9 +28,10 @@ export default class App extends Component<{}, AppState> {
       scheduleData: new ScheduleData(),
       filter: new Filter(),
       modals: [],
-      week: 9
+      week: 9,
+      year: 2020
     };
-    FlOpDataFetcher.fetch(this.state.week, 2020, (data:ScheduleData) => {
+    FlOpDataFetcher.fetch(this.state.week, this.state.year, (data:ScheduleData) => {
       this.setState({scheduleData: data});
     });
 
@@ -63,7 +65,7 @@ export default class App extends Component<{}, AppState> {
 
   public nextWeek() {
     this.setState(prev => {
-      FlOpDataFetcher.fetch(prev.week+1, 2020, (data:ScheduleData) => {
+      FlOpDataFetcher.fetch(prev.week+1, this.state.year, (data:ScheduleData) => {
         this.setState({scheduleData: data});
       });
       return {week: prev.week+1};
@@ -72,11 +74,15 @@ export default class App extends Component<{}, AppState> {
 
   public previousWeek() {
     this.setState(prev => {
-      FlOpDataFetcher.fetch(prev.week-1, 2020, (data:ScheduleData) => {
+      FlOpDataFetcher.fetch(prev.week-1, this.state.year, (data:ScheduleData) => {
         this.setState({scheduleData: data});
       });
       return {week: prev.week-1};
     });
+  }
+
+  public filterUpdated() {
+    this.setState(this.state);
   }
 
   private onWindowResized = () => {
@@ -100,7 +106,7 @@ export default class App extends Component<{}, AppState> {
   }
 
   render() {
-    const {scheduleData, filter, modals, week} = this.state;
+    const {scheduleData, filter, modals, week, year} = this.state;
 
     return (
       <div>
@@ -108,8 +114,11 @@ export default class App extends Component<{}, AppState> {
         <div id="status"><a href="https://github.com/feavy/EDT-React" target="_blank">Code Source</a> v 1.0</div>
         <h1>Emploi du temps - IUT de Blagnac</h1>
         <p id="reloaded">RELOADED</p>
-        <FilterChanger filter={filter} onChange={this._onFilterChange} week={week}/>
-        <Schedule filter={filter} data={scheduleData}/>
+        <FilterChanger filter={filter} onChange={this._onFilterChange} week={week}
+        roomsName={scheduleData.roomsName}
+        teachersName={scheduleData.teachersName}
+        unitsName={scheduleData.unitsName}/>
+        <Schedule filter={filter} data={scheduleData} week={week} year={year}/>
         {modals.map(modal => (
             modal
         ))}

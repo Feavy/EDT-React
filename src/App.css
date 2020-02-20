@@ -245,7 +245,7 @@ h2 {
     flex: 1 1 0px;
     text-align: center;
     overflow: hidden;
-    transition: all .5s;
+    transition: flex .5s, width .5s;
 }
 
 .schedule-case.info {

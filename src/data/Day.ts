@@ -19,10 +19,10 @@ export function dayFromString(value:string):Day {
 
 export function dayToString(day:Day):string {
     switch (day) {
-        case Day.MONDAY: return 'Lundi';
-        case Day.TUESDAY: return 'Mardi';
-        case Day.WEDNESDAY: return 'Mercredi';
-        case Day.THURSDAY: return 'Jeudi';
-        case Day.FRIDAY: return 'Vendredi';
+        case Day.MONDAY: return 'Lun.';
+        case Day.TUESDAY: return 'Mar.';
+        case Day.WEDNESDAY: return 'Mer.';
+        case Day.THURSDAY: return 'Jeu.';
+        case Day.FRIDAY: return 'Ven.';
     }
 }

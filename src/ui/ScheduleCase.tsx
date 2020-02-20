@@ -4,13 +4,13 @@ import CaseData, { EMPTY } from '../data/CaseData';
 import ScheduleSubCase from './ScheduleSubCase'
 import Filter from '../data/Filter';
 
-export default class ScheduleCase extends Component<{data: HourData, filter:Filter}> {
-    constructor(props: {data:HourData, filter:Filter}) {
+export default class ScheduleCase extends Component<{data: HourData, filter:Filter, style:{}}> {
+    constructor(props: {data:HourData, filter:Filter, style:{}}) {
         super(props);
     }
 
     render() {
-        const {data, filter} = this.props;
+        const {data, filter, style} = this.props;
 
         const maxWidth = {"INFO1": 0, "INFO2": 0};
         const height = {"INFO1": "50%", "INFO2" : "50%"};
@@ -20,7 +20,7 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
             for(let group of ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]) {
                 var current:CaseData = data.getCaseData(promo, group);
 
-                if(filter.isGroupVisible(promo, group)) {
+                if(filter.isGroupVisible(promo, group) || filter.isCaseVisible(current)) {
                     if(promo == "INFO1" || promo == "INFO2")
                         maxWidth[promo]++;
 
@@ -42,16 +42,16 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
 
         const groups:string[] = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]; 
 
-        if(!filter.isPromoVisible("INFO1")) {
+        if(maxWidth.INFO1 === 0) {
             height.INFO1 = "0%";
             height.INFO2 = "100%";
-        }else if(!filter.isPromoVisible("INFO2")){
+        }else if(maxWidth.INFO2 === 0){
             height.INFO1 = "100%";
             height.INFO2 = "0%";
         }
 
         return (
-            <div className="schedule-case">
+            <div className="schedule-case" style={{...style}}>
                 <div className="schedule-case-row" style={
                     {height: height["INFO1"]}
                 }>
