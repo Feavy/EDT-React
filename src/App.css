@@ -123,6 +123,25 @@ h2 {
     font-family: 'Spinnaker';
 }
 
+@media screen and (max-width: 700px) {
+    h1 {
+        font-size: 20px;
+    }
+    h2 {
+        font-size: 15px;
+    }
+    #reloaded {
+        text-align: left;
+        margin-left: 5em;
+    }
+    #status {
+        position: absolute;
+        right: 1em;
+        top: 1.5em;
+        font-size: 30px;
+    }
+}
+
 .schedule-case-row {
     transition: all .5s;
 }
