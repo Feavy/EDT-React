@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ScheduleData from '../data/ScheduleData';
 import ScheduleDay from './ScheduleDay';
 import Filter from '../data/Filter';
 
-import {getDateOfWeek} from '../utils/DateUtils';
+import { getDateOfWeek } from '../utils/DateUtils';
 
 type ScheduleProps = {
-    data:ScheduleData;
-    filter:Filter;
+    data: ScheduleData;
+    filter: Filter;
     week: number;
     year: number;
+    dayMode: boolean;
 }
 
 export default class Schedule extends Component<ScheduleProps, {}> {
@@ -26,12 +27,12 @@ export default class Schedule extends Component<ScheduleProps, {}> {
         ["15h45", "17h10"],
         ["17h15", "18h40"]];
 
-        const {data, filter, week, year} = this.props;
+        const { data, filter, week, year, dayMode } = this.props;
 
-        const dates:Date[] = [];
-        for(var i = 0; i < 5; i++) {
+        const dates: Date[] = [];
+        for (var i = 0; i < 5; i++) {
             const date = getDateOfWeek(week, year);
-            date.setUTCDate(date.getUTCDate()+i+1);
+            date.setUTCDate(date.getUTCDate() + i + 1);
             dates[i] = date;
         }
 
@@ -46,8 +47,16 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                         </div>
                     ))}
                 </div>
-                <div className="scheduleContainer">
-                {data.daysData.map((day, i) => <ScheduleDay news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount}/>)}
+                {/* schedule-column:
+                    width: 100%
+                    display: inline-block
+
+                scheduleContainer:
+                    white-space: nowrap
+                    display: block
+                    overflow-x: scroll */}
+                <div className="scheduleContainer" style={dayMode ? {whiteSpace: "nowrap", display: "block", overflowX: "scroll"} : {}}>
+                    {data.daysData.map((day, i) => <ScheduleDay entireWidth={dayMode} news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount} />)}
                 </div>
                 <div>
                     <h2>&nbsp;</h2>

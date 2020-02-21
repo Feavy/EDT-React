@@ -56,8 +56,8 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                     <PromoButtonGroup promo={"INFO1"} filter={filter} groups={["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]}/>
                 </div>
                 <div className="promoButtonGroup" id="promo2group">
-                    <PromoButtonGroup style={{flex: "1 1 0"}} promo={"INFO2"} filter={filter} groups={["1A", "1B", "2A", "2B", "3A", "3B", "4A"]}/>
-                    <PromoButtonGroup style={{flex: "1 1 0", maxWidth: "40px"}} promo={"LP"} filter={filter} groups={["LP"]}/>
+                    <PromoButtonGroup promo={"INFO2"} filter={filter} groups={["1A", "1B", "2A", "2B", "3A", "3B", "4A"]}/>
+                    <PromoButtonGroup style={{maxWidth: "40px"}} promo={"LP"} filter={filter} groups={["LP"]}/>
                 </div>
 
                 {/* WEEK SELECTION */}

@@ -37,8 +37,15 @@ export default class App extends Component<{}, AppState> {
       this.setState({ scheduleData: data });
     });
 
-    window.addEventListener("resize", this.onWindowResized);
-    this.onWindowResized();
+    const groups = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
+    var lastGroup:string = "";
+    while(this.tooManyGroupSelected()) {
+      lastGroup = groups.pop()!;
+      this.state.filter.hideGroup("INFO1", lastGroup);
+      this.state.filter.hideGroup("INFO2", lastGroup);
+    }
+
+    this.filterUpdated();
 
     App.app = this;
   }
@@ -91,30 +98,9 @@ export default class App extends Component<{}, AppState> {
     this.setState(this.state);
   }
 
-  private onWindowResized = () => {
-    let isMobile = window.innerWidth < 640;
-    if(this.isMobile != isMobile) {
-      this.forceUpdate();
-      this.isMobile = isMobile;
-    }
-
-    
-    //if(this.state && this.state.isMobile != isMobile)
-    // this.setState({isMobile: isMobile});
-    var r1 = this.adaptGroupsPreferredSelectedAmount("INFO1");
-    var r2 = this.adaptGroupsPreferredSelectedAmount("INFO2");
-    if (r1 || r2)
-      this.setState({ filter: this.state.filter }); // (lol)
-  }
-
-  private adaptGroupsPreferredSelectedAmount(promo: string) {
-    var rep = false;
-    const groups = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
-    while ((8 - this.state.filter.hiddenGroupsAmount(promo)) * 24 * 5 + 30 + 40 > window.innerWidth) {
-      this.state.filter.hideGroup(promo, groups.pop()!);
-      rep = true;
-    }
-    return rep;
+  private tooManyGroupSelected():boolean {
+    return (8 - this.state.filter.hiddenGroupsAmount("INFO1")) * 24 * 5 + 30 + 40 > window.innerWidth ||
+    (8 - this.state.filter.hiddenGroupsAmount("INFO2")) * 24 * 5 + 30 + 40 > window.innerWidth ;
   }
 
   render() {
@@ -130,7 +116,7 @@ export default class App extends Component<{}, AppState> {
           roomsName={scheduleData.roomsName}
           teachersName={scheduleData.teachersName}
           unitsName={scheduleData.unitsName} />
-        <Schedule filter={filter} data={scheduleData} week={week} year={year} />
+        <Schedule dayMode={this.tooManyGroupSelected()} filter={filter} data={scheduleData} week={week} year={year} />
         {modals.map(modal => (
           modal
         ))}

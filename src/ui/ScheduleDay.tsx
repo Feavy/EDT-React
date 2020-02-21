@@ -15,6 +15,7 @@ type ScheduleDayProps = {
     filter:Filter;
     date: Date;
     linesAmount: number;
+    entireWidth?:boolean;
 }
 
 export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
@@ -23,7 +24,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
     }
 
     render() {
-        const {day, data, filter, date, news, linesAmount} = this.props;
+        const {day, data, filter, date, news, linesAmount, entireWidth} = this.props;
         console.log(dateToString(date),news);
         const elems:JSX.Element[] = [];
         data.hoursData.map((hourData, i) => {
@@ -46,7 +47,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
             }
         );
         return (
-            <div className="schedule-column">
+            <div className="schedule-column" style={entireWidth ? {width: "100%", display: "inline-block"} : {}}>
                 <h2 className="column-title">{dayToString(day) + " "+dateToString(date)}</h2>
                 <div className="groups">
                 {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]
