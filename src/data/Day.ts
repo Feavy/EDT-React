@@ -22,7 +22,7 @@ export function dayToString(day:Day):string {
         case Day.MONDAY: return 'Lun.';
         case Day.TUESDAY: return 'Mar.';
         case Day.WEDNESDAY: return 'Mer.';
-        case Day.THURSDAY: return 'Jeu..';
+        case Day.THURSDAY: return 'Jeu.';
         case Day.FRIDAY: return 'Ven.';
     }
 }

@@ -13,15 +13,16 @@ import Modal from "./ui/Modal";
 
 type AppState = {
   scheduleData: ScheduleData;
-  filter:Filter;
-  modals:React.ComponentElement<any, Modal>[];
+  filter: Filter;
+  modals: React.ComponentElement<any, Modal>[];
   week: number;
   year: number;
 }
 
 export default class App extends Component<{}, AppState> {
-  private static app:App;
-  
+  private static app: App;
+  private weekTimeout: NodeJS.Timeout | undefined;
+
   constructor(props: {}, state: AppState) {
     super(props, state);
     this.state = {
@@ -31,8 +32,8 @@ export default class App extends Component<{}, AppState> {
       week: 9,
       year: 2020
     };
-    FlOpDataFetcher.fetch(this.state.week, this.state.year, (data:ScheduleData) => {
-      this.setState({scheduleData: data});
+    FlOpDataFetcher.fetch(this.state.week, this.state.year, (data: ScheduleData) => {
+      this.setState({ scheduleData: data });
     });
 
     window.addEventListener("resize", this.onWindowResized);
@@ -41,44 +42,48 @@ export default class App extends Component<{}, AppState> {
     App.app = this;
   }
 
-  private _onFilterChange = (newFilter:Filter) => {
-    this.setState({filter: newFilter});
+  private _onFilterChange = (newFilter: Filter) => {
+    this.setState({ filter: newFilter });
   }
 
-  public static get():App {
+  public static get(): App {
     return App.app;
   }
 
-  public addModal(modal:React.ComponentElement<any, Modal>) {
+  public addModal(modal: React.ComponentElement<any, Modal>) {
     this.setState((prevState) => {
       prevState.modals.push(modal);
       return prevState;
     });
   }
 
-  public removeModal(modal:any) {
+  public removeModal(modal: any) {
     this.setState((prevState) => {
       prevState.modals.splice(prevState.modals.indexOf(modal), 1);
       return prevState;
     });
   }
 
-  public nextWeek() {
-    this.setState(prev => {
-      FlOpDataFetcher.fetch(prev.week+1, this.state.year, (data:ScheduleData) => {
-        this.setState({scheduleData: data});
-      });
-      return {week: prev.week+1};
-    });
-  }
+  public setWeek(week: number) {
+    var yearAdd:number = 0;
+    if(week <= 0) {
+      week += 52;
+      yearAdd = -1;
+    }else if(week > 52) {
+      week -= 52;
+      yearAdd = 1;
+    }
+    
+    if (this.weekTimeout)
+      clearTimeout(this.weekTimeout);
 
-  public previousWeek() {
-    this.setState(prev => {
-      FlOpDataFetcher.fetch(prev.week-1, this.state.year, (data:ScheduleData) => {
-        this.setState({scheduleData: data});
+    this.weekTimeout = setTimeout(() => {
+      FlOpDataFetcher.fetch(week, this.state.year, (data: ScheduleData) => {
+        this.setState({ scheduleData: data });
       });
-      return {week: prev.week-1};
-    });
+    }, 500);
+
+    this.setState(prevState => {return { week: week, year: prevState.year + yearAdd }; });
   }
 
   public filterUpdated() {
@@ -88,17 +93,17 @@ export default class App extends Component<{}, AppState> {
   private onWindowResized = () => {
     let isMobile = window.innerWidth < 640;
     //if(this.state && this.state.isMobile != isMobile)
-     // this.setState({isMobile: isMobile});
+    // this.setState({isMobile: isMobile});
     var r1 = this.adaptGroupsPreferredSelectedAmount("INFO1");
     var r2 = this.adaptGroupsPreferredSelectedAmount("INFO2");
-    if(r1 || r2)
-      this.setState({filter: this.state.filter}); // (lol)
+    if (r1 || r2)
+      this.setState({ filter: this.state.filter }); // (lol)
   }
 
-  private adaptGroupsPreferredSelectedAmount(promo:string) {
+  private adaptGroupsPreferredSelectedAmount(promo: string) {
     var rep = false;
     const groups = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
-    while((8-this.state.filter.hiddenGroupsAmount(promo))*24*5+30+40 > window.innerWidth) {
+    while ((8 - this.state.filter.hiddenGroupsAmount(promo)) * 24 * 5 + 30 + 40 > window.innerWidth) {
       this.state.filter.hideGroup(promo, groups.pop()!);
       rep = true;
     }
@@ -106,21 +111,21 @@ export default class App extends Component<{}, AppState> {
   }
 
   render() {
-    const {scheduleData, filter, modals, week, year} = this.state;
+    const { scheduleData, filter, modals, week, year } = this.state;
 
     return (
       <div>
-        <ToggleLightDark/>
+        <ToggleLightDark />
         <div id="status"><a href="https://github.com/feavy/EDT-React" target="_blank">Code Source</a> v 1.0</div>
         <h1>Emploi du temps - IUT de Blagnac</h1>
         <p id="reloaded">RELOADED</p>
         <FilterChanger filter={filter} onChange={this._onFilterChange} week={week}
-        roomsName={scheduleData.roomsName}
-        teachersName={scheduleData.teachersName}
-        unitsName={scheduleData.unitsName}/>
-        <Schedule filter={filter} data={scheduleData} week={week} year={year}/>
+          roomsName={scheduleData.roomsName}
+          teachersName={scheduleData.teachersName}
+          unitsName={scheduleData.unitsName} />
+        <Schedule filter={filter} data={scheduleData} week={week} year={year} />
         {modals.map(modal => (
-            modal
+          modal
         ))}
       </div>
     );

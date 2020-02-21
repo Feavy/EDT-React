@@ -13,14 +13,13 @@ type FilterChangerProps = {
 }
 
 export default class FilterChanger extends Component<FilterChangerProps, {}> {
-
     private toggledButton: string = "undefined";
+    private week:number = 0;
+    private weekTimeout:NodeJS.Timeout|undefined;
 
     constructor(props:FilterChangerProps) {
         super(props);
-        setInterval(function () {
-
-        }, 200);
+        this.week = props.week;
     }
 
     private toggleGroup(promo: string, group: string) {
@@ -45,6 +44,14 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
     private onRoomSelected(room:string){
         this.props.filter.room = room;
         App.get().filterUpdated();
+    }
+
+    private previousWeek = () => {
+        App.get().setWeek(this.props.week - 1);
+    }
+
+    private nextWeek() {
+        App.get().setWeek(this.props.week + 1);
     }
 
     render() {
@@ -112,9 +119,9 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                 <div className="filterBlock">
                     <h2>Semaine</h2>
                     <div className="buttonGroup">
-                        <input type="submit" value="◀" className="active" onClick={() => App.get().previousWeek()} />
+                        <input type="submit" value="◀" className="active" onClick={() => this.previousWeek()} />
                         <span id="weekLbl">{week}</span>
-                        <input type="submit" value="▶" className="active" onClick={() => App.get().nextWeek()} />
+                        <input type="submit" value="▶" className="active" onClick={() => this.nextWeek()} />
                     </div>
                 </div>
 

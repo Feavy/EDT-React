@@ -144,6 +144,7 @@ h2 {
 
 .schedule-case-row {
     transition: all .5s;
+    will-change: height;
 }
 
 @import url('https://fonts.googleapis.com/css?family=Miriam+Libre&display=swap');
@@ -159,6 +160,7 @@ h2 {
     border-radius: 5px;
     position: relative;
     height: 100%;
+    will-change: width;
 }
 
 .schedule-sub-case.shadow::after {
@@ -197,7 +199,7 @@ h2 {
 }
 
 .schedule-case {
-    margin: .25rem;
+    margin: .25rem .12rem .25rem .12rem;
     height: 90px;
 }
 
@@ -222,6 +224,7 @@ h2 {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    transition: all .5s;
 }
 
 #modalBg {

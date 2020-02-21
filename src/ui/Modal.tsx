@@ -32,7 +32,8 @@ export default class Modal extends Component<ModalProps, any> {
                 top: "30%",
                 width: "500px",
                 height: "40%",
-                opacity: 0.33
+                opacity: 0.33,
+                finalState: true
             });
         }, 0);
     }
@@ -44,7 +45,8 @@ export default class Modal extends Component<ModalProps, any> {
                 top: this.initialTop,
                 width: this.initialWidth,
                 height: this.initialHeight,
-                opacity: 0
+                opacity: 0,
+                finalState: false
             });
         }, 0);
         setTimeout(() => {
@@ -56,7 +58,7 @@ export default class Modal extends Component<ModalProps, any> {
 
     render() {
         const {children} = this.props;
-        const {left, top, width, height, color, opacity} = this.state;
+        const {left, top, width, height, color, opacity, finalState} = this.state;
         return (
             <>
             <div className="modal" style={{
@@ -66,7 +68,7 @@ export default class Modal extends Component<ModalProps, any> {
                 height: height,
                 backgroundColor: color
             }}>
-                <div className="modalContent">
+                <div className="modalContent" style={{top: finalState ? "10px" : "", transform: finalState ? "translateY(0)" : ""}}>
                 {children}
                 </div>
             </div>
