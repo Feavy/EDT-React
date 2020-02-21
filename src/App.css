@@ -237,7 +237,7 @@ h2 {
 .schedule-case>p {
     margin: 0;
     padding-top: 35px;
-    display: inline;
+    text-align: center;
 }
 
 .modal {
