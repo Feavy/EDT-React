@@ -15,10 +15,7 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
         target.classList.remove("shadow");
 
         const mod:React.ComponentElement<Modal, any> = (
-        <Modal  left={target.getBoundingClientRect().left+"px"}
-                top={target.getBoundingClientRect().top+"px"}
-                width={target.clientWidth+"px"}
-                height={target.clientHeight+"px"}
+        <Modal  target={target}
                 color={target.style.backgroundColor!}
                 onHide={() => {
                     target.style.transform = "scale(1.1)"
@@ -29,7 +26,7 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
                         target.style.transform = ""
                     }, 0);
                 }}>
-            <div style={{textAlign: "center", color: data.txtColor}}>
+            <div style={{textAlign: "center", color: data.txtColor}} className="caseModal">
                 <h1>{data.unitName}</h1>
                 <h1>{data.teacherName}</h1>
                 <h1>{data.roomName}</h1>

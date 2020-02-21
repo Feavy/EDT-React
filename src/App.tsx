@@ -21,6 +21,7 @@ type AppState = {
 
 export default class App extends Component<{}, AppState> {
   private static app: App;
+  private isMobile:boolean = false;
   private weekTimeout: NodeJS.Timeout | undefined;
 
   constructor(props: {}, state: AppState) {
@@ -92,6 +93,12 @@ export default class App extends Component<{}, AppState> {
 
   private onWindowResized = () => {
     let isMobile = window.innerWidth < 640;
+    if(this.isMobile != isMobile) {
+      this.forceUpdate();
+      this.isMobile = isMobile;
+    }
+
+    
     //if(this.state && this.state.isMobile != isMobile)
     // this.setState({isMobile: isMobile});
     var r1 = this.adaptGroupsPreferredSelectedAmount("INFO1");

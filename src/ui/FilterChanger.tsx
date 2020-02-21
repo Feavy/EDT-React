@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Filter from "../data/Filter";
 
 import App from "../App";
+import PromoButtonGroup from "./filter/PromoButtonGroup";
 
 type FilterChangerProps = {
     filter: Filter;
@@ -13,22 +14,12 @@ type FilterChangerProps = {
 }
 
 export default class FilterChanger extends Component<FilterChangerProps, {}> {
-    private toggledButton: string = "undefined";
     private week:number = 0;
     private weekTimeout:NodeJS.Timeout|undefined;
 
     constructor(props:FilterChangerProps) {
         super(props);
         this.week = props.week;
-    }
-
-    private toggleGroup(promo: string, group: string) {
-        if (this.props.filter.isGroupVisible(promo, group)) {
-            this.props.filter.hideGroup(promo, group);
-        } else {
-            this.props.filter.showGroup(promo, group);
-        }
-        this.props.onChange(this.props.filter);
     }
 
     private onUnitSelected(unit:string) {
@@ -61,60 +52,14 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
         roomsName.sort();
         return (
             <div id="filters">
-                {["INFO1", "INFO2"].map(promo => (
-                    /* GROUP SELECTION */
-                    <div className="filterBlock">
-                        <h2>{promo}</h2>
-                        <div className="buttonGroup">
-                            {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"].map(group => {
-                                return !(promo == "INFO2" && group == "4B") && (
-                                    <input type="submit"
-                                        onMouseDown={(e) => this.toggleGroup(promo, group)}
-                                        onMouseEnter={(e) => {
-                                            if (e.buttons == 1)
-                                                this.toggleGroup(promo, group);
-                                        }}
-                                        onTouchMove={(e) => {
-                                            const elem: Element | null = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
-                                            if (elem instanceof HTMLInputElement) {
-                                                const button: HTMLInputElement = elem as HTMLInputElement;
-                                                if (button.value != this.toggledButton) {
-                                                    this.toggledButton = button.value;
-                                                    button.dispatchEvent(new Event("mousedown", { bubbles: true }));
-                                                }
-                                            }
-                                        }}
-                                        value={group}
-                                        className={filter.isGroupVisible(promo, group) ? "active" : ""} />
-                                )
-                            })}
-                        </div>
-                    </div>
-
-                ))}
-                <div className="filterBlock">
-                    <h2>LP</h2>
-                    <div className="buttonGroup">
-                        <input type="submit"
-                            onMouseDown={(e) => this.toggleGroup("INFO2", "4B")}
-                            onMouseEnter={(e) => {
-                                if (e.buttons == 1)
-                                    this.toggleGroup("INFO2", "4B");
-                            }}
-                            onTouchMove={(e) => {
-                                const elem: Element | null = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
-                                if (elem instanceof HTMLInputElement) {
-                                    const button: HTMLInputElement = elem as HTMLInputElement;
-                                    if (button.value != this.toggledButton) {
-                                        this.toggledButton = button.value;
-                                        button.dispatchEvent(new Event("mousedown", { bubbles: true }));
-                                    }
-                                }
-                            }}
-                            value="LP"
-                            className={filter.isGroupVisible("INFO2", "4B") ? "active" : ""} />
-                    </div>
+                <div className="promoButtonGroup">
+                    <PromoButtonGroup promo={"INFO1"} filter={filter} groups={["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]}/>
                 </div>
+                <div className="promoButtonGroup" id="promo2group">
+                    <PromoButtonGroup style={{flex: "1 1 0"}} promo={"INFO2"} filter={filter} groups={["1A", "1B", "2A", "2B", "3A", "3B", "4A"]}/>
+                    <PromoButtonGroup style={{flex: "1 1 0", maxWidth: "40px"}} promo={"LP"} filter={filter} groups={["LP"]}/>
+                </div>
+
                 {/* WEEK SELECTION */}
                 <div className="filterBlock">
                     <h2>Semaine</h2>

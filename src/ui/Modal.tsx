@@ -3,10 +3,7 @@ import { Color } from "csstype";
 import App from "../App";
 
 type ModalProps = {
-    left: string;
-    top: string;
-    width: string;
-    height: string;
+    target: HTMLElement;
     color: Color;
     onHide?: () => void;
 }
@@ -20,12 +17,14 @@ export default class Modal extends Component<ModalProps, any> {
     constructor(props: ModalProps) {
         super(props);
         
-        this.initialLeft = props.left;
-        this.initialTop = props.top;
-        this.initialWidth = props.width;
-        this.initialHeight = props.height;
+        const {target} = this.props;
 
-        this.state = props;
+        this.initialLeft = target.getBoundingClientRect().left+"px";
+        this.initialTop = target.getBoundingClientRect().top+"px";
+        this.initialWidth = target.clientWidth+"px";
+        this.initialHeight = target.clientHeight+"px";
+
+        this.state = {left: this.initialLeft, top: this.initialTop, width: this.initialWidth, height: this.initialHeight, color: props.color};
         setTimeout(() => {
             this.setState({
                 left: "calc(50% - 250px)",

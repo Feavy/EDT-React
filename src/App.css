@@ -104,10 +104,16 @@ select:hover {
     display: flex;
 }
 
+.scheduleContainer {
+    display: flex;
+    width: 100%;
+}
+
 .schedule-column {
     flex: 1 1 0px;
     box-sizing: border-box;
     vertical-align: top;
+    overflow: hidden;
 }
 
 .column-title,
@@ -135,6 +141,9 @@ h2 {
     h2 {
         font-size: 15px;
     }
+    .column-title {
+        font-size: 13px;
+    }
     #reloaded {
         text-align: left;
         margin-left: 5em;
@@ -145,6 +154,32 @@ h2 {
         top: 1.5em;
         font-size: 30px;
     }
+    .promoButtonGroup {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 401px) {
+    #promo2group {
+        display: flex;
+    }
+    .promoButtonGroup {
+        display: flex !important;
+    }
+    .promoButtonGroup .buttonGroup {
+        display: block;
+    }
+    .promoButtonGroup>* {
+        flex: 1 1 0px;
+    }
+    .promoButtonGroup input {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.promoButtonGroup {
+    display: inline-block;
 }
 
 .schedule-case-row {
@@ -236,6 +271,8 @@ h2 {
     font-weight: 600;
     width: 100%;
     display: inline-block;
+    white-space: nowrap;
+    word-break: break-all;
 }
 
 .schedule-case>p {
@@ -259,7 +296,7 @@ h2 {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    transition: all .5s;
+    transition: cubic-bezier(0, 1.05, 1, 1.01) all .5s;
 }
 
 #modalBg {
@@ -273,11 +310,13 @@ h2 {
 }
 
 .modal * {
-    transition: all .5s;
-    font-size: 10px;
     font-weight: normal;
     font-family: 'Miriam Libre';
     margin: 0;
+}
+
+.caseModal>* {
+    font-size: 10px;
 }
 
 #toggleLightDark {

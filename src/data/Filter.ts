@@ -14,6 +14,10 @@ export default class Filter {
     }
 
     public hideGroup(promo:string, group:string) {
+        if(promo === "LP") {
+            group = "4B";
+            promo = "INFO2";
+        }
         if(promo === "INFO1" || promo === "INFO2") {
             if(!this._unvisibleGroups[promo].includes(group))
                 this._unvisibleGroups[promo].push(group);
@@ -21,6 +25,10 @@ export default class Filter {
     }
 
     public showGroup(promo:string, group:string) {
+        if(promo === "LP") {
+            group = "4B";
+            promo = "INFO2";
+        }
         if(promo === "INFO1" || promo === "INFO2") {
             const index:number = this._unvisibleGroups[promo].indexOf(group);
             if(index >= 0)
@@ -32,6 +40,10 @@ export default class Filter {
     }
 
     public isGroupVisible(promo:string, group:string):boolean {
+        if(promo === "LP") {
+            group = "4B";
+            promo = "INFO2";
+        }
         if(promo === "INFO1" || promo === "INFO2") {
             return !this._unvisibleGroups[promo].includes(group);
         }

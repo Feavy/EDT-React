@@ -46,13 +46,15 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                         </div>
                     ))}
                 </div>
+                <div className="scheduleContainer">
                 {data.daysData.map((day, i) => <ScheduleDay news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount}/>)}
+                </div>
                 <div>
                     <h2>&nbsp;</h2>
                     {hours.map(hour => (
                         <div className="schedule-case info">
                             <p>1A</p>
-                            <p>2A LP</p>
+                            <p>2A&nbsp;LP</p>
                         </div>
                     ))}
                 </div>
