@@ -215,6 +215,10 @@ h2 {
     border-radius: 5px;
 }
 
+.schedule-case:not(.info):nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .schedule-info-case {
     width: 90%;
     margin: auto;

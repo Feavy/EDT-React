@@ -27,7 +27,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
         console.log(dateToString(date),news);
         const elems:JSX.Element[] = [];
         data.hoursData.map((hourData, i) => {
-                elems.push(<ScheduleCase data={hourData} filter={filter} style={{backgroundColor: i%2 === 0 ? "rgba(0,0,0,0.05)" : ""}}/>);
+                elems.push(<ScheduleCase data={hourData} filter={filter}/>);
                 if(i == 2) {
                     if(news)
                         elems.push(<ScheduleInfoCase data={news}/>);

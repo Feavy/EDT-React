@@ -4,13 +4,13 @@ import CaseData, { EMPTY } from '../data/CaseData';
 import ScheduleSubCase from './ScheduleSubCase'
 import Filter from '../data/Filter';
 
-export default class ScheduleCase extends Component<{data: HourData, filter:Filter, style:{}}> {
+export default class ScheduleCase extends Component<{data: HourData, filter:Filter}> {
     constructor(props: {data:HourData, filter:Filter, style:{}}) {
         super(props);
     }
 
     render() {
-        const {data, filter, style} = this.props;
+        const {data, filter} = this.props;
 
         const maxWidth = {"INFO1": 0, "INFO2": 0};
         const height = {"INFO1": "50%", "INFO2" : "50%"};
@@ -51,7 +51,7 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
         }
 
         return (
-            <div className="schedule-case" style={{...style}}>
+            <div className="schedule-case">
                 <div className="schedule-case-row" style={
                     {height: height["INFO1"]}
                 }>
