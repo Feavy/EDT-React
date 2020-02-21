@@ -10,8 +10,8 @@ Implémentation : [https://feavy.netlify.com/edt/](https://feavy.netlify.com/edt
 ## Roadmap
 
 ### Bêta 1.0 (Version mobile)
-- **Refactoriser le code**
-- Nouvelle organisation
+- **Refactoriser le code** ✔
+- Nouvelle organisation ✔
 - Animations ✔ *(Alpha 3.0)*
 - Refaire avec uniquement des flexbox
 - Changement de jour / semaine en swipant latéralement
