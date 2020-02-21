@@ -1,6 +1,7 @@
 import DayData from "./DayData";
 import {Day} from "./Day";
 import CaseData from "./CaseData";
+import NewsData from "./NewsData";
 
 export default class ScheduleData {
     private _teachersName:string[] = [];
@@ -8,6 +9,7 @@ export default class ScheduleData {
     private _roomsName:string[] = [];
    
     private _daysData:DayData[] = [new DayData(), new DayData(), new DayData(), new DayData(), new DayData()];
+    public newsData:NewsData[] = [];
 
     public set(day:Day, startTime:number, promo:string, group:string, caseData:CaseData) {
         this._daysData[day].set(startTime, promo, group, caseData);
@@ -17,6 +19,10 @@ export default class ScheduleData {
             this._unitsName.push(caseData.unitName);
         if(!this._roomsName.includes(caseData.roomName))
             this._roomsName.push(caseData.roomName);
+    }
+
+    public get newsLineAmount():number {
+        return Math.max(...this.newsData.map(news => news.lines.length));
     }
 
     public get daysData():DayData[] {

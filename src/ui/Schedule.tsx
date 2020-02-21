@@ -46,7 +46,7 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                         </div>
                     ))}
                 </div>
-                {data.daysData.map((day, i) => <ScheduleDay date={dates[i]} day={i} data={day} filter={filter} key={i}/>)}
+                {data.daysData.map((day, i) => <ScheduleDay news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount}/>)}
                 <div>
                     <h2>&nbsp;</h2>
                     {hours.map(hour => (

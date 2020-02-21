@@ -65,10 +65,4 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
             </div>
         );
     }
-
-    private formatTime(time:number):string {
-        const hours:number = Math.floor(time / 60);
-        const min:number = time % 60;
-        return ('0' + hours).slice(-2) + "h" + ('0' + min).slice(-2)
-    }
 }
