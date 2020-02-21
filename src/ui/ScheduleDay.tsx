@@ -7,6 +7,7 @@ import Filter from '../data/Filter';
 import {dateToString} from "../utils/DateUtils";
 import NewsData from '../data/NewsData';
 import ScheduleInfoCase from './ScheduleInfoCase';
+import { generateBlanks } from '../utils/UIUtils';
 
 type ScheduleDayProps = {
     day:Day;
@@ -33,15 +34,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
                     if(news)
                         elems.push(<ScheduleInfoCase data={news}/>);
                     else if(linesAmount > 0) {
-                        const blanks:JSX.Element[] = [];
-                        for(var j = 0; j < linesAmount; j++) {
-                            blanks.push(<p>&nbsp;</p>)
-                        }
-                        elems.push(
-                        <div className="schedule-case schedule-info-case">
-                            {blanks}
-                        </div>
-                        );
+                        elems.push(generateBlanks(linesAmount));
                     }
                 }
             }

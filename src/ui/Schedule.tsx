@@ -4,6 +4,7 @@ import ScheduleDay from './ScheduleDay';
 import Filter from '../data/Filter';
 
 import { getDateOfWeek } from '../utils/DateUtils';
+import { generateBlanks } from '../utils/UIUtils';
 
 type ScheduleProps = {
     data: ScheduleData;
@@ -36,16 +37,31 @@ export default class Schedule extends Component<ScheduleProps, {}> {
             dates[i] = date;
         }
 
+        const hourElems: JSX.Element[] = [];
+        const infoElems: JSX.Element[] = [];
+
+        hours.forEach((hour,i) => {
+            hourElems.push(<div className="schedule-case info">
+                <p>{hour[0]}</p>
+                <p>{hour[1]}</p>
+            </div>);
+                
+            infoElems.push( <div className="schedule-case info">
+                    <p>1A</p>
+                    <p>2A&nbsp;LP</p>
+                </div>);
+
+            if(i == 2) {
+                hourElems.push(generateBlanks(data.newsLineAmount));
+                infoElems.push(generateBlanks(data.newsLineAmount));
+            }
+        });
+
         return (
             <div className="schedule">
                 <div>
                     <h2>&nbsp;</h2>
-                    {hours.map(hour => (
-                        <div className="schedule-case info">
-                            <p>{hour[0]}</p>
-                            <p>{hour[1]}</p>
-                        </div>
-                    ))}
+                    {hourElems}
                 </div>
                 {/* schedule-column:
                     width: 100%
@@ -55,17 +71,12 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                     white-space: nowrap
                     display: block
                     overflow-x: scroll */}
-                <div className="scheduleContainer" style={dayMode ? {whiteSpace: "nowrap", display: "block", overflowX: "scroll"} : {}}>
+                <div className="scheduleContainer" style={dayMode ? { whiteSpace: "nowrap", display: "block", overflowX: "scroll" } : {}}>
                     {data.daysData.map((day, i) => <ScheduleDay entireWidth={dayMode} news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount} />)}
                 </div>
                 <div>
                     <h2>&nbsp;</h2>
-                    {hours.map(hour => (
-                        <div className="schedule-case info">
-                            <p>1A</p>
-                            <p>2A&nbsp;LP</p>
-                        </div>
-                    ))}
+                    {infoElems}
                 </div>
             </div>
         );
