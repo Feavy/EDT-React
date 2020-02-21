@@ -51,7 +51,7 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                     <p>2A&nbsp;LP</p>
                 </div>);
 
-            if(i == 2) {
+            if(i == 2 && data.newsLineAmount > 0) {
                 hourElems.push(generateBlanks(data.newsLineAmount));
                 infoElems.push(generateBlanks(data.newsLineAmount));
             }
