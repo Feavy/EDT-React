@@ -43,7 +43,7 @@ export default class ScheduleInfoCase extends Component<{ data: NewsData }> {
             );
         }
 
-        if (window.innerWidth < 640) {
+        if (window.innerWidth < 980) {
             return (
                 <div className="schedule-case schedule-info-case shadow" style={{ backgroundColor: data.lines[0].bgColor, color: data.lines[0].txtColor }} onClick={(e) => this.onInfoClick(e.target as HTMLDivElement)}>
                     <div>

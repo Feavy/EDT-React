@@ -113,7 +113,7 @@ select:hover {
     flex: 1 1 0px;
     box-sizing: border-box;
     vertical-align: top;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .column-title,
@@ -141,7 +141,16 @@ h2 {
     }
 }
 
+@media screen and (max-width: 760px) {
+    .gap {
+        height: 60px;
+    }
+}
+
 @media screen and (max-width: 700px) {
+    .gap {
+        height: 33px;
+    }
     h1 {
         font-size: 20px;
         position: relative;
@@ -353,9 +362,22 @@ h2 {
     font-size: 11px;
 }
 
+.day {
+    width: 52px;
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.date {
+    width: 75px;
+    display: inline-block;
+    padding-left: 5px;
+}
+
 @media screen and (max-height: 712px) {
     h2.column-title {
         font-size: 13px;
+        height: 30px;
     }
     .schedule-case {
         margin: .12rem .10rem;
@@ -382,7 +404,8 @@ h2 {
     input[type="submit"],
     .schedule-sub-case,
     .group,
-    select {
+    select,
+    .schedule-info-case {
         transition: none !important;
     }
 }

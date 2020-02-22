@@ -40,7 +40,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
         );
         return (
             <div className="schedule-column" style={entireWidth ? {width: "100%", display: "inline-block"} : {}}>
-                <h2 className="column-title">{dayToString(day) + " "+dateToString(date)}</h2>
+                <h2 className="column-title"><span className="day">{dayToString(day)}</span><span className="date">{dateToString(date)}</span></h2>
                 <div className="groups">
                 {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]
                 .map(group => <div key={"grINFO1"+group} className="group" style={{

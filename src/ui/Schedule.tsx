@@ -57,17 +57,19 @@ export default class Schedule extends Component<ScheduleProps, {}> {
             }
         });
 
+        const classes = "column-title "+((!dayMode)?"gap":"");
+
         return (
             <div className="schedule">
                 <div>
-                    <h2 className="column-title">&nbsp;</h2>
+                    <h2 className={classes}>&nbsp;</h2>
                     {hourElems}
                 </div>
                 <div className="scheduleContainer" style={dayMode ? { whiteSpace: "nowrap", display: "block", overflowX: "scroll" } : {}}>
                     {data.daysData.map((day, i) => <ScheduleDay entireWidth={dayMode} news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={"day"+dates[i]} linesAmount={data.newsLineAmount} />)}
                 </div>
                 <div>
-                    <h2 className="column-title">&nbsp;</h2>
+                    <h2 className={classes}>&nbsp;</h2>
                     {infoElems}
                 </div>
             </div>
