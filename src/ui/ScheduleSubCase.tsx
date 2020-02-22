@@ -17,19 +17,19 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
         const mod:React.ComponentElement<Modal, any> = (
         <Modal  target={target}
                 color={target.style.backgroundColor!}
-                onHide={() => {
-                    target.style.transform = "scale(1.1)"
-                    target.style.visibility = "";
-                    target.classList.add("shadow");
-                    setTimeout(function() {
-                        target.style.transition = "all .5s";
-                        target.style.transform = ""
-                    }, 0);
-                }}>
-            <div style={{textAlign: "center", color: data.txtColor}} className="caseModal">
-                <h1>{data.unitName}</h1>
-                <h1>{data.teacherName}</h1>
-                <h1>{data.roomName}</h1>
+                initialContent={(
+                    <div style={{textAlign: "center", color: data.txtColor}} className="">
+                        <p>{data.unitName}</p>
+                        <p>{data.teacherName}</p>
+                        <p>{data.roomName}</p>
+                    </div>
+                )}>
+            <div style={{textAlign: "center", color: data.txtColor}} className="">
+                <p>{data.unitName}</p>
+                <p>{data.teacherName}</p>
+                <p>{data.roomName}</p>
+                <br/>
+                <p>Autres infos</p>
             </div>
         </Modal>);
         App.get().addModal(mod);

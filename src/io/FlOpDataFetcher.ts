@@ -43,6 +43,7 @@ export default class FlOpDataFetcher {
             scheduleData.newsData[index] = new NewsData();
             
             scheduleData.newsData[index].setLine(elem.get("txt"), elem.get("strk_color"), elem.get("fill_color"), y, elem.get("is_linked") || undefined);
+
             line = lines[i++];
         }
 

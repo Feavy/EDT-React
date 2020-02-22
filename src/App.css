@@ -230,7 +230,8 @@ h2 {
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.schedule-sub-case.shadow:hover {
+.schedule-sub-case.shadow:hover,
+.schedule-info-case:hover {
     transform: scale(1.1);
     z-index: 10;
 }
@@ -267,7 +268,7 @@ h2 {
 }
 
 .schedule-info-case p {
-    display: inline;
+    margin: 0;
 }
 
 .schedule-info-case a {
@@ -374,10 +375,14 @@ h2 {
     height: auto;
     padding-top: .25em;
     padding-bottom: .25em;
+    transition: all .5s;
 }
 
 @media screen and (max-width: 700px) {
-    *:not(.modal) {
+    input[type="submit"],
+    .schedule-sub-case,
+    .group,
+    select {
         transition: none !important;
     }
 }

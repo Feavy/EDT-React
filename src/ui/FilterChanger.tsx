@@ -79,18 +79,18 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                 </div>
 
                 <div className="filterBlock">
-                    <h2>Salle</h2>
-                    <select onChange={e => this.onRoomSelected(e.target.value)}>
-                        <option value={undefined} selected={!filter._room}>Toutes</option>
-                        {roomsName.map(name => <option key={name} value={name} selected={filter._room === name}>{name}</option>)}
-                    </select>
-                </div>
-
-                <div className="filterBlock">
                     <h2>Module</h2>
                     <select onChange={e => this.onUnitSelected(e.target.value)}>
                         <option value={undefined} selected={!filter._unit}>Tous</option>
                         {unitsName.map(name => <option key={name} value={name} selected={filter._unit === name}>{name}</option>)}
+                    </select>
+                </div>
+
+                <div className="filterBlock">
+                    <h2>Salle</h2>
+                    <select onChange={e => this.onRoomSelected(e.target.value)}>
+                        <option value={undefined} selected={!filter._room}>Toutes</option>
+                        {roomsName.map(name => <option key={name} value={name} selected={filter._room === name}>{name}</option>)}
                     </select>
                 </div>
             </div>
