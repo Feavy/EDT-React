@@ -13,6 +13,14 @@ export default class Filter {
         this._teacher = undefined;
     }
 
+    public fromString(dataStr:string) {
+        const data = JSON.parse(dataStr);
+        this._unvisibleGroups = data._unvisibleGroups;
+        this._teacher = data._teacher;
+        this._room = data._room;
+        this._unit = data._unit;
+    }
+
     public hideGroup(promo:string, group:string) {
         if(promo === "LP") {
             group = "4B";

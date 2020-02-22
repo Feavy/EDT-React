@@ -10,6 +10,7 @@ import FilterChanger from './ui/FilterChanger';
 import ToggleLightDark from './ui/ToggleLightDark';
 
 import Modal from "./ui/Modal";
+import { getWeekNumber } from './utils/DateUtils';
 
 type AppState = {
   scheduleData: ScheduleData;
@@ -28,14 +29,43 @@ export default class App extends Component<{}, AppState> {
 
   constructor(props: {}, state: AppState) {
     super(props, state);
+
+    let d = new Date();
+    d.setUTCDate(d.getUTCDate()+2);
+    
+    var result = getWeekNumber(d);
+    
+    console.log(result);
+
+    const defaultYear = result[0];
+    const defaultWeek = result[1];
+
+    const lastWeek = Number.parseInt(localStorage.getItem("week") || "0");
+    
+    var schedule = new ScheduleData();
+    var filter = new Filter();
+
+    if(lastWeek === defaultWeek && localStorage.getItem("schedule")) {
+      schedule = FlOpDataFetcher.parseData(localStorage.getItem("schedule")!);
+    }
+
+    if(localStorage.getItem("filter")) {
+      filter.fromString(localStorage.getItem("filter")!);
+    }
+
     this.state = {
-      scheduleData: new ScheduleData(),
-      filter: new Filter(),
+      scheduleData: schedule,
+      filter: filter,
       modals: [],
-      week: 9,
-      year: 2020
+      week: defaultWeek,
+      year: defaultYear
     };
-    FlOpDataFetcher.fetch(this.state.week, this.state.year, (data: ScheduleData) => {
+
+    localStorage.setItem("week", defaultWeek+"");
+
+    FlOpDataFetcher.fetch(this.state.week, this.state.year, (data: ScheduleData, rawData?:string) => {
+      if(rawData)
+        localStorage.setItem("schedule", rawData);
       this.setState({ scheduleData: data });
     });
 
@@ -103,6 +133,7 @@ export default class App extends Component<{}, AppState> {
 
   public filterUpdated() {
     this.setState(this.state);
+    localStorage.setItem("filter", JSON.stringify(this.state.filter));
   }
 
   private tooManyGroupSelected():boolean {

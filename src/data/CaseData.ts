@@ -1,36 +1,36 @@
 import { Color } from "csstype";
 
 export default class CaseData {
-    private _unitName: string = "???";
-    private _teacherName: string = "???";
-    private _roomName: string = "???";
-    private _bgColor: Color = "0x000000";
-    private _txtColor: Color = "0x000000";
-    private _darkerBgColor: Color = "0x000000";
-    private _lighterBgColor: Color = "0x000000";
+    public readonly unitName: string = "???";
+    public readonly teacherName: string = "???";
+    public readonly roomName: string = "???";
+    public readonly coursetype: string = "???";
+    public readonly roomType: string = "???";
+    public readonly bgColor: Color = "0x000000";
+    public readonly txtColor: Color = "0x000000";
+    public readonly darkerBgColor: Color = "0x000000";
+    public readonly lighterBgColor: Color = "0x000000";
+
 
     public width: number = 1;
 
-    constructor(unitName: string, teacherName: string, roomName: string, bgColor: Color, txtColor: Color) {
-        this._unitName = unitName;
-        this._teacherName = teacherName;
-        this._roomName = roomName;
-        this._bgColor = bgColor;
-        this._txtColor = txtColor;
+    constructor(unitName: string, teacherName: string, roomName: string, coursetype:string, roomType:string, bgColor: Color, txtColor: Color) {
+        this.unitName = unitName;
+        this.teacherName = teacherName;
+        this.roomName = roomName;
+        this.bgColor = bgColor;
+        this.txtColor = txtColor;
+        this.coursetype = coursetype;
+        this.roomType = roomType;
 
-        this._lighterBgColor = CaseData.lighter(this._bgColor, 25);
-        this._darkerBgColor = CaseData.lighter(this._bgColor, -25);
+        this.lighterBgColor = CaseData.lighter(this.bgColor, 25);
+        this.darkerBgColor = CaseData.lighter(this.bgColor, -25);
     }
 
-    public get unitName(): string { return this._unitName; }
-    public get teacherName(): string { return this._teacherName; }
-    public get roomName(): string { return this._roomName; }
-    public get bgColor(): Color { return this._bgColor; }
-    public get txtColor(): Color { return this._txtColor; }
-    
-    public get darkerBgColor(): Color {return this._darkerBgColor; }
-    public get lighterBgColor(): Color {return this._lighterBgColor; }
-
+    public clone():CaseData {
+        return new CaseData(this.unitName, this.teacherName, this.roomName, this.coursetype, this.roomType, this.bgColor, this.txtColor);
+    }
+ 
     private static lighter(color: Color, diff: number): Color {
         var usePound = false;
 
@@ -60,4 +60,4 @@ export default class CaseData {
     }
 }
 
-export const EMPTY: CaseData = new CaseData("", "", "", "", "");
+export const EMPTY: CaseData = new CaseData("", "", "", "", "", "", "");

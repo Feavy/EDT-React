@@ -32,16 +32,16 @@ export default class HourData {
             if(promo == "INFO1")
                 groups.push("4B");
             for(let gr of groups) {
-                this._data.get(promo)!.set(gr, new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
+                this._data.get(promo)!.set(gr, caseData.clone());
             }
         } else if(group.length == 2) {
             this._data.get(promo)!.set(group, caseData);
         } else {
             let grs = group.split("");
             for(let gr of grs) {
-                this._data.get(promo)!.set(gr+"A", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
+                this._data.get(promo)!.set(gr+"A", caseData.clone());
                 if(!(promo === "INFO2" && gr === "4"))
-                    this._data.get(promo)!.set(gr+"B", new CaseData(caseData.unitName, caseData.teacherName, caseData.roomName, caseData.bgColor, caseData.txtColor));
+                    this._data.get(promo)!.set(gr+"B", caseData.clone());
             }
         }
     }
@@ -55,7 +55,7 @@ export default class HourData {
             return EMPTY;
 
         if(!this._data.get(promo)!.get(group))
-            this._data.get(promo)!.set(group, new CaseData("", "", "", "", ""));
+            this._data.get(promo)!.set(group, new CaseData("", "", "", "", "", "", ""));
         
         return this._data.get(promo)!.get(group)!;
     }

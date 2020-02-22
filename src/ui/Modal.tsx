@@ -68,7 +68,7 @@ export default class Modal extends Component<ModalProps, any> {
     }
 
     render() {
-        const { children } = this.props;
+        const { children, initialContent } = this.props;
         const { left, top, width, height, color, opacity, finalState } = this.state;
         return (
             <>
@@ -81,8 +81,11 @@ export default class Modal extends Component<ModalProps, any> {
                 }}>
                     <div className="modalContent" style={{ fontSize: !finalState ? "10px" : "", top: finalState ? "10px" : "", transform: finalState ? "translateY(0)" : "" }}>
                         <div style={{ textAlign: "center" }}>
-                            {this.props.initialContent}
+                            {initialContent}
                         </div>
+                    </div>
+                    <div style={{ marginTop: "1em", padding: "1em", transition: "cubic-bezier(0, 1.05, 1, 1.01) all .5s", opacity: finalState ? "1" : "0" }}>
+                        {children}
                     </div>
                 </div>
                 <div id="modalBg" style={{ background: "rgba(0, 0, 0, " + opacity + ")" }} onClick={() => this.hide()}></div>
