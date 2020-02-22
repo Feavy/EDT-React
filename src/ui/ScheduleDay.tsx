@@ -26,13 +26,12 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
 
     render() {
         const {day, data, filter, date, news, linesAmount, entireWidth} = this.props;
-        console.log(dateToString(date),news);
         const elems:JSX.Element[] = [];
         data.hoursData.map((hourData, i) => {
-                elems.push(<ScheduleCase data={hourData} filter={filter}/>);
+                elems.push(<ScheduleCase key={day+""+i} data={hourData} filter={filter}/>);
                 if(i == 2) {
                     if(news)
-                        elems.push(<ScheduleInfoCase data={news}/>);
+                        elems.push(<ScheduleInfoCase key={day+"info"} data={news}/>);
                     else if(linesAmount > 0) {
                         elems.push(generateBlanks(linesAmount));
                     }
@@ -44,7 +43,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
                 <h2 className="column-title">{dayToString(day) + " "+dateToString(date)}</h2>
                 <div className="groups">
                 {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]
-                .map(group => <div className="group" style={{
+                .map(group => <div key={"grINFO1"+group} className="group" style={{
                     flex: !filter.isGroupVisible("INFO1", group) ? "0" : "",
                     width: !filter.isGroupVisible("INFO1", group) ? "0px" : ""
                 }}>{group}</div>)}
@@ -52,7 +51,7 @@ export default class ScheduleDay extends Component<ScheduleDayProps, {}> {
                 {elems}
                 <div className="groups">
                 {["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]
-                .map(group =>  <div className="group" style={{
+                .map(group =>  <div key={"grINFO2"+group} className="group" style={{
                     flex: !filter.isGroupVisible("INFO2", group) ? "0" : "",
                     width: !filter.isGroupVisible("INFO2", group) ? "0px" : ""
                 }}>{group == "4B" ? "LP" : group}</div>)}

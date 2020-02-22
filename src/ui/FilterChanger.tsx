@@ -74,7 +74,7 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                     <h2>Prof</h2>
                     <select onChange={e => this.onTeacherSelected(e.target.value)}>
                         <option value={undefined} selected={!filter._teacher}>Tous</option>
-                        {teachersName.map(name => <option value={name} selected={filter._teacher === name}>{name}</option>)}
+                        {teachersName.map(name => <option key={name} value={name} selected={filter._teacher === name}>{name}</option>)}
                     </select>
                 </div>
 
@@ -82,7 +82,7 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                     <h2>Salle</h2>
                     <select onChange={e => this.onRoomSelected(e.target.value)}>
                         <option value={undefined} selected={!filter._room}>Toutes</option>
-                        {roomsName.map(name => <option value={name} selected={filter._room === name}>{name}</option>)}
+                        {roomsName.map(name => <option key={name} value={name} selected={filter._room === name}>{name}</option>)}
                     </select>
                 </div>
 
@@ -90,7 +90,7 @@ export default class FilterChanger extends Component<FilterChangerProps, {}> {
                     <h2>Module</h2>
                     <select onChange={e => this.onUnitSelected(e.target.value)}>
                         <option value={undefined} selected={!filter._unit}>Tous</option>
-                        {unitsName.map(name => <option value={name} selected={filter._unit === name}>{name}</option>)}
+                        {unitsName.map(name => <option key={name} value={name} selected={filter._unit === name}>{name}</option>)}
                     </select>
                 </div>
             </div>

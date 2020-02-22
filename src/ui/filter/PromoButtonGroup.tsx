@@ -22,7 +22,7 @@ export default class PromoButtonGroup extends React.Component<{ promo: string, f
                 <h2>{promo}</h2>
                 <div className="buttonGroup">
                     {groups.map(group =>
-                        <input type="submit"
+                        <input key={promo+group} type="submit"
                             style={{width: 100/groups.length+"%"}}
                             onMouseDown={(e) => this.toggleGroup(promo, group)}
                             onMouseEnter={(e) => {

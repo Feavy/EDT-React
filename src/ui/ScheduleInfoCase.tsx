@@ -18,9 +18,9 @@ export default class ScheduleInfoCase extends Component<{ data: NewsData }> {
         const modal: any = (<Modal target={elem as HTMLElement} color={data.lines[0].bgColor}>
             <div style={{ textAlign: "center", color: data.lines[0].txtColor }}>
                 {data.lines.map(line => line.url ?
-                    <a href={line.url} target="_blank" style={{ color: line.txtColor }}>{line.content}</a>
+                    <a key={line.content} href={line.url} target="_blank" style={{ color: line.txtColor }}>{line.content}</a>
                     :
-                    <p style={{ color: line.txtColor }}>{line.content}</p>)}
+                    <p key={line.content} style={{ color: line.txtColor }}>{line.content}</p>)}
             </div>
         </Modal>);
         App.get().addModal(modal);
@@ -40,7 +40,7 @@ export default class ScheduleInfoCase extends Component<{ data: NewsData }> {
             return (
                 <div className="schedule-case schedule-info-case shadow" style={{ backgroundColor: data.lines[0].bgColor, color: data.lines[0].txtColor }} onClick={(e) => this.onInfoClick(e.target)}>
                     <div>
-                        {data.lines.map(line => <p style={{ color: line.txtColor }}>{"INFOS"}</p>)}
+                        {data.lines.map(line => <p key={line.content} style={{ color: line.txtColor }}>{"INFOS"}</p>)}
                     </div>
                 </div>
             );
@@ -50,9 +50,9 @@ export default class ScheduleInfoCase extends Component<{ data: NewsData }> {
             <div className="schedule-case schedule-info-case shadow" style={{ backgroundColor: data.lines[0].bgColor, color: data.lines[0].txtColor }}>
                 <div>
                     {data.lines.map(line => line.url ?
-                        <a href={line.url} target="_blank" style={{ color: line.txtColor }}>{line.content}</a>
+                        <a key={line.content} href={line.url} target="_blank" style={{ color: line.txtColor }}>{line.content}</a>
                         :
-                        <p style={{ color: line.txtColor }}>{line.content}</p>)}
+                        <p key={line.content} style={{ color: line.txtColor }}>{line.content}</p>)}
                 </div>
             </div>
         );

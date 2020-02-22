@@ -64,7 +64,7 @@ export default class Schedule extends Component<ScheduleProps, {}> {
                     {hourElems}
                 </div>
                 <div className="scheduleContainer" style={dayMode ? { whiteSpace: "nowrap", display: "block", overflowX: "scroll" } : {}}>
-                    {data.daysData.map((day, i) => <ScheduleDay entireWidth={dayMode} news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={i} linesAmount={data.newsLineAmount} />)}
+                    {data.daysData.map((day, i) => <ScheduleDay entireWidth={dayMode} news={data.newsData[i]} date={dates[i]} day={i} data={day} filter={filter} key={"day"+dates[i]} linesAmount={data.newsLineAmount} />)}
                 </div>
                 <div>
                     <h2 className="column-title">&nbsp;</h2>

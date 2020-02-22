@@ -24,6 +24,8 @@ export default class App extends Component<{}, AppState> {
   private isMobile:boolean = false;
   private weekTimeout: NodeJS.Timeout | undefined;
 
+  private wasTooManyGroups:boolean = true;
+
   constructor(props: {}, state: AppState) {
     super(props, state);
     this.state = {
@@ -46,6 +48,11 @@ export default class App extends Component<{}, AppState> {
     }
 
     this.filterUpdated();
+
+    window.addEventListener("resize", (e) => {
+      if(this.wasTooManyGroups != this.tooManyGroupSelected())
+        this.forceUpdate();
+    });
 
     App.app = this;
   }
@@ -105,7 +112,7 @@ export default class App extends Component<{}, AppState> {
 
   render() {
     const { scheduleData, filter, modals, week, year } = this.state;
-
+    this.wasTooManyGroups = this.tooManyGroupSelected();
     return (
       <div>
         <ToggleLightDark />

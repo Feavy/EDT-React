@@ -55,12 +55,12 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
                 <div className="schedule-case-row" style={
                     {height: height["INFO1"]}
                 }>
-                {groups.map(group => <ScheduleSubCase width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
+                {groups.map(group => <ScheduleSubCase key={"caseINFO1"+group} width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
                 </div>
                 <div className="schedule-case-row" style={
                     {height: height["INFO2"]}
                 }>
-                {groups.map(group => <ScheduleSubCase width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
+                {groups.map(group => <ScheduleSubCase key={"caseINFO2"+group} width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
                 </div>
             </div>
         );
