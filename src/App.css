@@ -134,25 +134,28 @@ h2 {
     font-family: 'Spinnaker';
 }
 
+@media screen and (max-width: 1037px) {
+    #status {
+        top: 0px;
+        right: 0px;
+    }
+}
+
 @media screen and (max-width: 700px) {
     h1 {
         font-size: 20px;
+        position: relative;
+        top: 45px;
+    }
+    #reloaded {
+        position: relative;
+        top: 30px;
     }
     h2 {
         font-size: 15px;
     }
     .column-title {
         font-size: 13px;
-    }
-    #reloaded {
-        text-align: left;
-        margin-left: 5em;
-    }
-    #status {
-        position: absolute;
-        right: 1em;
-        top: 1.5em;
-        font-size: 30px;
     }
     .promoButtonGroup {
         width: 100%;
@@ -175,6 +178,15 @@ h2 {
     .promoButtonGroup input {
         padding-left: 0;
         padding-right: 0;
+    }
+    select {
+        padding: .5em;
+    }
+    input[type="submit"] {
+        padding: .5em;
+    }
+    .promoButtonGroup input[type="submit"] {
+        padding: .75em 0 .75em 0;
     }
 }
 
@@ -252,14 +264,6 @@ h2 {
 
 .schedule-case:not(.info):nth-child(odd) {
     background-color: rgba(0, 0, 0, 0.05);
-}
-
-.schedule-info-case {
-    width: 90%;
-    margin: auto;
-    height: auto;
-    padding-top: .25em;
-    padding-bottom: .25em;
 }
 
 .schedule-info-case p {
@@ -346,4 +350,28 @@ h2 {
 
 .schedule-case.info {
     font-size: 11px;
+}
+
+@media screen and (max-height: 712px) {
+    h2.column-title {
+        font-size: 13px;
+    }
+    .schedule-case {
+        margin: .12rem .10rem;
+        height: 80px;
+    }
+    .group {
+        font-size: 10px;
+    }
+    .schedule-case>p {
+        padding-top: 28px;
+    }
+}
+
+.schedule-info-case {
+    width: 90%;
+    margin: auto;
+    height: auto;
+    padding-top: .25em;
+    padding-bottom: .25em;
 }
