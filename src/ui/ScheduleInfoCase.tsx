@@ -22,6 +22,7 @@ export default class ScheduleInfoCase extends Component<{ data: NewsData }> {
         const modal: any = (<Modal
             target={elem}
             color={data.lines[0].bgColor}
+            shadow={true}
             initialContent={<p style={{ fontSize: "16px" }}>INFOS</p>}>
             <div style={{ textAlign: "center", color: data.lines[0].txtColor }}>
                 {data.lines.map(line => line.url ?

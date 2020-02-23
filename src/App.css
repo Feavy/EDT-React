@@ -160,7 +160,7 @@ h2 {
         position: relative;
         top: 30px;
     }
-    h2 {
+    .filterBlock>h2 {
         font-size: 15px;
     }
     .column-title {
@@ -412,4 +412,8 @@ h2 {
     .schedule-info-case {
         transition: none !important;
     }
+}
+
+.case-info>p {
+    margin-left: 1em;
 }

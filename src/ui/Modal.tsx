@@ -6,6 +6,7 @@ type ModalProps = {
     target: HTMLElement;
     color: Color;
     initialContent: JSX.Element;
+    shadow?:boolean;
 }
 
 export default class Modal extends Component<ModalProps, any> {
@@ -21,7 +22,8 @@ export default class Modal extends Component<ModalProps, any> {
 
         target.style.transition = "none";
         target.style.visibility = "hidden";
-        target.classList.remove("shadow");
+        if(this.props.shadow)
+            target.classList.remove("shadow");
 
         this.initialLeft = target.getBoundingClientRect().left + "px";
         this.initialTop = target.getBoundingClientRect().top + "px";
@@ -31,9 +33,9 @@ export default class Modal extends Component<ModalProps, any> {
         this.state = { left: this.initialLeft, top: this.initialTop, width: this.initialWidth, height: this.initialHeight, color: props.color };
         setTimeout(() => {
             this.setState({
-                left: "calc(50% - 250px)",
+                left: window.innerWidth >= 500 ? "calc(50% - 250px)" : "0",
                 top: "30%",
-                width: "500px",
+                width: window.innerWidth >= 500 ? "500px" : "100%",
                 height: "40%",
                 opacity: 0.33,
                 finalState: true
@@ -58,7 +60,8 @@ export default class Modal extends Component<ModalProps, any> {
             App.get().removeModal(this);
             target.style.transform = "scale(1.1)"
             target.style.visibility = "";
-            target.classList.add("shadow");
+            if(this.props.shadow)
+                target.classList.add("shadow");
     
             setTimeout(function () {
                 target.style.transition = "all .5s";
@@ -84,7 +87,7 @@ export default class Modal extends Component<ModalProps, any> {
                             {initialContent}
                         </div>
                     </div>
-                    <div style={{ marginTop: "1em", padding: "1em", transition: "cubic-bezier(0, 1.05, 1, 1.01) all .5s", opacity: finalState ? "1" : "0" }}>
+                    <div style={{ marginTop: "1em", padding: "2em", transition: "cubic-bezier(0, 1.05, 1, 1.01) all .5s", opacity: finalState ? "1" : "0" }}>
                         {children}
                     </div>
                 </div>

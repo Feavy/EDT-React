@@ -25,14 +25,15 @@ export default class ScheduleSubCase extends Component<{data: CaseData|undefined
                         <p>{data.teacherName}</p>
                         <p>{data.roomName}</p>
                     </div>
-                )}>
-            <div style={{color: data.txtColor}} className="">
+                )}
+                shadow={true}>
+            <div style={{color: data.txtColor}} className="case-info">
                 <h2>Cours</h2>
-                <h3>Type : {data.roomType}</h3>
-                <h3>Enseignant : {Teachers[data.teacherName].prenom} {Teachers[data.teacherName].nom}</h3>
-                <h3>Salle(s) : {Rooms.roomgroups[data.roomName].join(", ")}</h3>
+                <p>Type : {data.roomType}</p>
+                <p>Enseignant : {Teachers[data.teacherName].prenom} {Teachers[data.teacherName].nom}</p>
+                <p>Salle(s) : {Rooms.roomgroups[data.roomName].join(", ")}</p>
                 <h2>Salles disponibles</h2>
-                <h3>{this.props.availableRooms.join(", ")}</h3>
+                <p>{this.props.availableRooms.join(", ")}</p>
             </div>
         </Modal>);
         App.get().addModal(mod);

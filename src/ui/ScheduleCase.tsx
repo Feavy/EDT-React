@@ -4,10 +4,30 @@ import CaseData, { EMPTY } from '../data/CaseData';
 import ScheduleSubCase from './ScheduleSubCase'
 import Filter from '../data/Filter';
 import Rooms from '../data/Rooms';
+import Modal from './Modal';
+import App from '../App';
 
 export default class ScheduleCase extends Component<{data: HourData, filter:Filter}> {
+    private availableRooms:string[] = [];
+
     constructor(props: {data:HourData, filter:Filter, style:{}}) {
         super(props);
+    }
+
+    private showAvailableRooms = (theDiv:HTMLDivElement) => {
+        if(theDiv.classList.contains("schedule-sub-case") && theDiv.style.backgroundColor) {
+            return;
+        }
+        if(!theDiv.classList.contains("schedule-case")) {
+            this.showAvailableRooms(theDiv.parentElement! as HTMLDivElement);
+            return;
+        }
+        console.log(theDiv);
+        var modal:JSX.Element = <Modal target={theDiv} initialContent={<div></div>} color={document.body.style.backgroundColor || "white"} >
+            <h2>Salles disponibles</h2>
+            <p>{this.availableRooms.join(", ")}</p>
+        </Modal>;
+        App.get().addModal(modal);
     }
 
     render() {
@@ -47,7 +67,7 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
 
         const groups:string[] = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"];
         
-        const availableRooms = Rooms.roomtypes.any.slice().filter(r => !busyRooms.includes(r)).sort();
+        this.availableRooms = Rooms.roomtypes.any.slice().filter(r => !busyRooms.includes(r)).sort();
 
         if(maxWidth.INFO1 === 0) {
             height.INFO1 = "0%";
@@ -58,16 +78,16 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
         }
 
         return (
-            <div className="schedule-case">
+            <div className="schedule-case" onClick={(e) => this.showAvailableRooms(e.target as HTMLDivElement)}>
                 <div className="schedule-case-row" style={
                     {height: height["INFO1"]}
                 }>
-                {groups.map(group => <ScheduleSubCase availableRooms={availableRooms} key={"caseINFO1"+group} width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
+                {groups.map(group => <ScheduleSubCase availableRooms={this.availableRooms} key={"caseINFO1"+group} width={maxWidth['INFO1']} data={data.getCaseData("INFO1", group)}/>)}
                 </div>
                 <div className="schedule-case-row" style={
                     {height: height["INFO2"]}
                 }>
-                {groups.map(group => <ScheduleSubCase availableRooms={availableRooms} key={"caseINFO2"+group} width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
+                {groups.map(group => <ScheduleSubCase availableRooms={this.availableRooms} key={"caseINFO2"+group} width={maxWidth['INFO2']} data={data.getCaseData("INFO2", group)}/>)}
                 </div>
             </div>
         );
