@@ -41,6 +41,11 @@ export default class Modal extends Component<ModalProps, any> {
                 finalState: true
             });
         }, 0);
+        setTimeout(() => {
+            this.setState({
+                height: "auto",
+            });
+        }, 500);
     }
 
     private hide = () => {
@@ -87,7 +92,7 @@ export default class Modal extends Component<ModalProps, any> {
                             {initialContent}
                         </div>
                     </div>
-                    <div style={{ marginTop: "1em", padding: "2em", transition: "cubic-bezier(0, 1.05, 1, 1.01) all .5s", opacity: finalState ? "1" : "0" }}>
+                    <div style={{ padding: "2em", transition: "cubic-bezier(0, 1.05, 1, 1.01) all .5s", opacity: finalState ? "1" : "0" }}>
                         {children}
                     </div>
                 </div>
