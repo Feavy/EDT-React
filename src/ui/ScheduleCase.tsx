@@ -43,13 +43,14 @@ export default class ScheduleCase extends Component<{data: HourData, filter:Filt
             for(let group of ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B"]) {
                 var current:CaseData = data.getCaseData(promo, group);
 
+                if(Rooms.roomgroups[current.roomName])
+                    busyRooms.push(...Rooms.roomgroups[current.roomName]);
+
                 if(filter.isGroupVisible(promo, group) || filter.isCaseVisible(current)) {
                     if(promo == "INFO1" || promo == "INFO2")
                         maxWidth[promo]++;
 
                     current.width = 1;
-                    if(Rooms.roomgroups[current.roomName])
-                    busyRooms.push(...Rooms.roomgroups[current.roomName]);
             
                     if(lastCase && lastCase.teacherName === current.teacherName) {
                         lastCase.width++;
