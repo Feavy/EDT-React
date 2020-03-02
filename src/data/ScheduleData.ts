@@ -22,7 +22,12 @@ export default class ScheduleData {
     }
 
     public get newsLineAmount():number {
-        return Math.max(...this.newsData.map(news => news.lines.length));
+        let max = 0;
+        for(let news of this.newsData) {
+            if(news && news.lines.length > max)
+                max = news.lines.length
+        }
+        return max;
     }
 
     public get daysData():DayData[] {
