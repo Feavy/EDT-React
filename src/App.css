@@ -222,6 +222,7 @@ h2 {
     position: relative;
     height: 100%;
     will-change: width;
+    box-sizing: border-box;
 }
 
 .schedule-sub-case.shadow::after {
@@ -270,7 +271,6 @@ h2 {
     margin: .25rem .12rem .25rem .12rem;
     height: 90px;
     border-radius: 5px;
-    box-sizing: border-box;
 }
 
 .schedule-case:not(.info):nth-child(odd) {
