@@ -15,7 +15,7 @@ Implémentation : [https://feavy.netlify.com/edt/](https://feavy.netlify.com/edt
 - Salles disponibles ✔
 - Infos du cours cliqué en plus des salles disponibles ✔
 - Mode hors ligne ✔
-- Mode jour / semaine avec affichage en conséquence
+- Mode jour / semaine avec affichage en conséquence ✔
 
 ### Idées de fonctionnalités 
 - Sélections multiples de profs
