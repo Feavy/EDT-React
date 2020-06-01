@@ -1,391 +1,432 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300');
-
 body {
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
-  margin: 8px 0 8px 0;
-  transition: all .5s;
+    color: #444;
+    transition: all .5s;
 }
 
-#root {
-  background-color: inherit;
+#status {
+    position: absolute;
+    right: 1em;
+    top: .5em;
+    font-size: 30px;
 }
 
-.App {
-  background-color: inherit;
+#status a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-right: 1em;
+    position: relative;
+    z-index: 1;
 }
 
-#title {
-  text-align: center;
+#status a::before {
+    position: absolute;
+    bottom: 0px;
+    height: 10px;
+    left: 0px;
+    right: 0px;
+    content: "";
+    background-color: #10f44336;
+    z-index: 0;
+    transition: transform .5s;
 }
 
-#info {
-  position: absolute;
-  right: 0px;
-  top: 0px;
-  height: 1.5em;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 1px;
+a:hover::before {
+    transform: scaleX(1.1);
 }
 
-#info>*{
-  display: inline;
-  margin: 0px 5px 0px 5px;
+input[type="submit"] {
+    background-color: #bdbdbd;
+    border: none;
+    cursor: pointer;
+    padding: 1em;
+    color: white;
+    font-weight: bold;
+    transition: all .5s;
+    border-left: 1px solid #e0e0e0;
 }
 
-#info>a{
-  text-decoration: none;
-  font-weight: bold;
-  color: #03A9F4;
+input[type="submit"]:hover {
+    background-color: #757575;
 }
 
-#themeSelector {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  border: 2px solid;
-  border-color: inherit;
-  border-radius: 50%;
-  box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.3);
-  background-color: inherit;
-  cursor: pointer;
-}
-#themeSelector>span{
-  font-size: 30px;
-  text-align: center;
-  padding-top: 1px;
-  width: 34px;
-  height: 28px;
+input[type="submit"].active {
+    background-color: #2196f3;
+    border-left: 1px solid #64b5f6;
 }
 
-#promos {
-  display: inline-block;
+input[type="submit"].active:hover {
+    background-color: #1976d2;
 }
 
-#promos>*{
-  display: inline-block;
+select {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 1em;
+    font-weight: bold;
+    transition: all .5s;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    font-family: 'Miriam Libre', sans-serif;
 }
 
-#schedule {
-  font-size: 10px;
-  display: grid;
-  grid-template-columns: 40px repeat(5, 1fr) 40px;
-  border-color: inherit;
+select:hover {
+    background-color: #1976d2;
 }
 
-.promos {
-  display: flex;
-  flex-direction: column;
-  margin: 0 .5em 0 .5em;
+#weekLbl {
+    height: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    width: 4em;
+    display: inline-block;
+    text-align: center;
 }
 
-.promos > *{
-  width: 100%;
-  flex-grow: 1;
-  flex-shrink: 0;
+.filterBlock {
+    vertical-align: top;
+    display: inline-block;
+    margin-left: .5em;
+    margin-right: .5em;
 }
 
-.promos>div>span{
-  width: 100%;
-  text-align: center;
-  display: inline-block;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+.buttonGroup {
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.heures {
-  margin-left: .5em;
-  position: relative;
+.schedule {
+    display: flex;
 }
 
-.heures>.start{
-  position: absolute;
-  top: 10px;
-}
-
-.heures>.end {
-  position: absolute;
-  bottom: 10px;
-}
-
-.case {
-  min-height: 80px;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-}
-
-.case.firstLeft {
-  border-left: 1px solid;
-}
-
-.case.firstTop {
-  border-top: 1px solid;
-}
-
-.darkBorders{
-  border-color: #444 !important;
-}
-
-.lightBorders {
-  border-color: white !important;
-}
-
-.infoCase{
-  margin: 10px 0 10px 0;
-  border-radius: 2px;
-  border-color: inherit;
-  overflow: hidden;
-}
-
-.infoCase>* {
-  text-align: center;
-  display: inline-block;
-  width: 100%;
-  padding: 2px 0 2px 0;
-  font-size: 13px;
-}
-
-.infoCase>a{
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.subCase {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  /*transition: width .1s, transform .1s;
-  width: 100%;*/
-}
-
-/*.subCase:hover {
-  z-index: 5;
-  width: 200%;
-  transform: translateX(-25%);
-}*/
-
-.subCase>div>span {
-  text-align: center;
-  display: inline-block;
-  width: 100%;
-}
-
-.subCase>div{
-  position: relative;
-}
-
-.infoButton {
-  box-sizing: border-box;
-  border: 1px solid;
-  border-color: inherit;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-}
-
-.infoButton>span{
-  font-weight: bold;
-  text-transform: uppercase;
-  display: inline-block;
-  margin: 1em 0 1em 0;
-}
-
-#msgBoxContainer {
-  background-color: inherit;
-}
-
-#msgBox{
-  position: fixed;
-  width: 90%;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  z-index: 10;
-  background-color: inherit;
-  color: inherit;
-  padding: 2em 0 2em 0;
-  border-radius: 5px;
-  box-shadow: 0px 10px 15px -5px rgba(0, 0, 0, 0.5);
-}
-
-#msgBox>*{
-  color: inherit;
-  text-align: center;
-  display: inline-block;
-  width: 100%;
-  font-size: 13px;
-}
-
-#msgBoxBg{
-  background-color: rgba(0, 0, 0, 0.3);
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 9;
-}
-
-#filterBox {
-  margin-left: 8px;
-  padding: 0px 20px 20px 20px;
-}
-
-#filterBox > div{
-  float: left;
-  margin-left: 1em;
-  margin-right: 2em;
-}
-
-#filterBox::after{
-  content: "";
-  display: block;
-  clear: both;
-}
-
-#filterBox > div > label {
-  display: inline-block;
-  width: 75px;
-}
-
-#filterBox > div > select {
-  width: 75px;
-}
-
-.input {
-  margin: 0 .5em 0 .5em !important;
-  width: 60%;
-}
-
-button {
-  background-color: rgba(0, 0, 0, 0.15);
-  color: inherit;
-  border: 1px solid;
-  border-color: inherit;
-  padding: .2em .1em 0 .1em;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color .5s;
-}
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 30px;  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: 'liga';
-}
-
-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-input[type="number"] {
-  text-align: center;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
-}
-
-#weekLabel {
-  position: relative;
-  left: 1em;
-  bottom: 6px;
-}
-
-#groups>div{
-  margin: 0 1em 0 1em;
-  display: inline-block;
-}
-
-.groupChooser {
-  border: 1px solid;
-  border-color: inherit;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0px 5px 15px -10px rgba(0, 0, 0, 0.9);
-  display: flex;
-}
-
-.groupChooser > div {
-  flex-grow: 1;
-  display: inline-block;
-  padding: .5em .5em .5em .5em;
-  cursor: pointer;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.3);
-  /*background-color: #AAA;*/
-  font-weight: bold;
-  transition: background-color .2s
-}
-
-.groupChooser>div:hover {
-  background-color: rgba(0, 0, 0, 0.15);
-}
-
-.groupChooser>.selected {
-  background-color: #66bb6a;
-}
-
-.groupChooser>.selected:hover {
-  background-color: #c8e6c9;
-}
-
-@media screen and (max-width: 383px) {
-  #filterBox{
-    padding: 0 0 20px 0 !important;
-  }
-  #groups{
-    margin-left: 0em !important;
-    margin-right: 0em !important;
-    width: 98%;
-  }
-  #groups>div:not(#lp){
+.scheduleContainer {
+    display: flex;
     width: 100%;
-  }
-  #lp>div{
-    margin-top: 1em;
-  }
-  #groups>div {
-    margin-left: 0em !important;
-    margin-right: 0em !important;
-  }
 }
 
-.whiteTxt{
-  transition: all .5s;
-  color: white !important;
+.schedule-column {
+    flex: 1 1 0px;
+    box-sizing: border-box;
+    vertical-align: top;
+    /* overflow: hidden; */
 }
 
-.whiteBorder {
-  transition: all .5s;
-  border-bottom: 1px solid white;
+.column-title,
+h1 {
+    text-align: center;
+}
+
+#reloaded {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: .25em;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Spinnaker&display=swap');
+h1,
+h2 {
+    font-family: 'Spinnaker';
+}
+
+@media screen and (max-width: 1037px) {
+    #status {
+        top: 0px;
+        right: 0px;
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .gap {
+        height: 60px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .gap {
+        height: 33px;
+    }
+    h1 {
+        font-size: 20px;
+        position: relative;
+        top: 45px;
+    }
+    #reloaded {
+        position: relative;
+        top: 30px;
+    }
+    .filterBlock>h2 {
+        font-size: 15px;
+    }
+    .column-title {
+        font-size: 13px;
+    }
+    .promoButtonGroup {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 401px) {
+    #promo2group {
+        display: flex;
+    }
+    .promoButtonGroup {
+        display: flex !important;
+    }
+    .promoButtonGroup .buttonGroup {
+        display: block;
+    }
+    .promoButtonGroup>* {
+        flex: 1 1 0px;
+    }
+    .promoButtonGroup input {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    select {
+        padding: .5em;
+    }
+    input[type="submit"] {
+        padding: .5em;
+    }
+    .promoButtonGroup input[type="submit"] {
+        padding: .75em 0 .75em 0;
+    }
+}
+
+.promoButtonGroup {
+    display: inline-block;
+}
+
+.schedule-case-row {
+    transition: all .5s;
+    will-change: height;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Miriam+Libre&display=swap');
+.schedule-sub-case {
+    font-family: 'Miriam Libre', sans-serif;
+    transition: all .5s;
+    display: inline-block;
+    width: 12.5%;
+    font-size: 10px;
+    vertical-align: top;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 5px;
+    position: relative;
+    height: 100%;
+    will-change: width;
+    box-sizing: border-box;
+}
+
+.schedule-sub-case.shadow::after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: rgba(255, 255, 255, 0);
+    transition: all .5s;
+}
+
+.schedule-sub-case.shadow:hover::after {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.schedule-sub-case.shadow:hover,
+.schedule-info-case:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.shadow {
+    cursor: pointer;
+    box-shadow: inset 2px 2px rgba(255, 255, 255, 0.2), inset -3px -3px rgba(0, 0, 0, 0.2);
+}
+
+.schedule-sub-case>div>p {
+    margin: 0;
+}
+
+.subCaseContent {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.schedule-info-case>* {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.schedule-case {
+    margin: .25rem .12rem .25rem .12rem;
+    height: 90px;
+    border-radius: 5px;
+}
+
+.schedule-case:not(.info):nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.schedule-info-case p {
+    margin: 0;
+}
+
+.schedule-info-case a {
+    text-decoration: none;
+    font-weight: 600;
+    width: 100%;
+    display: inline-block;
+    white-space: nowrap;
+    word-break: break-all;
+}
+
+.schedule-case>p {
+    margin: 0;
+    padding-top: 35px;
+    text-align: center;
+}
+
+.modal {
+    position: fixed;
+    z-index: 11;
+    border-radius: 5px;
+    transform: scale(1.1);
+    transition: all .5s;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    box-shadow: inset 2px 2px rgba(255, 255, 255, 0.2), inset -3px -3px rgba(0, 0, 0, 0.2);
+}
+
+.modal {
+    max-width: 100%;
+}
+
+.modalContent {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: cubic-bezier(0, 1.05, 1, 1.01) all .5s;
+}
+
+#modalBg {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: rgba(0, 0, 0, 0);
+    transition: all .5s;
+}
+
+.modal * {
+    font-weight: normal;
+    font-family: 'Miriam Libre';
+    margin: 0;
+}
+
+.caseModal>* {
+    font-size: 10px;
+}
+
+#toggleLightDark {
+    border-radius: 0px 0px 40px 0px;
+    width: 40px;
+    height: 40px;
+    padding: .15em .25em .25em .15em;
+    display: inline-block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.2);
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.groups {
+    display: flex;
+}
+
+.group {
+    flex: 1 1 0px;
+    text-align: center;
+    overflow: hidden;
+    transition: flex .5s, width .5s;
+}
+
+.schedule-case.info {
+    font-size: 11px;
+}
+
+.day {
+    width: 52px;
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.date {
+    width: 75px;
+    display: inline-block;
+    padding-left: 5px;
+}
+
+@media screen and (max-width: 480px) {
+    .date {
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .day {
+        width: auto;
+    }
+}
+
+@media screen and (max-height: 712px) {
+    h2.column-title {
+        font-size: 13px;
+        height: 30px;
+    }
+    .schedule-case {
+        margin: .12rem .10rem;
+        height: 80px;
+    }
+    .group {
+        font-size: 10px;
+    }
+    .schedule-case>p {
+        padding-top: 28px;
+    }
+}
+
+.schedule-info-case {
+    width: 90%;
+    margin: auto;
+    height: auto;
+    padding-top: .25em;
+    padding-bottom: .25em;
+    transition: all .5s;
+}
+
+@media screen and (max-width: 700px) {
+    input[type="submit"],
+    .schedule-sub-case,
+    .group,
+    select,
+    .schedule-info-case {
+        transition: none !important;
+    }
+}
+
+.case-info>p {
+    margin-left: 1em;
 }

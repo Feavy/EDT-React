@@ -1,5 +1,3 @@
-
-
 # FlopEDT WebApp
 Système de visualisation, codé en ReactJS, de l'emploi du temps généré par le logiciel [FlopEdt](http://www.flopedt.org/).
 
