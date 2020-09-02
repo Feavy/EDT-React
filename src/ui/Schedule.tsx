@@ -23,7 +23,7 @@ export default class Schedule extends Component<ScheduleProps, {}> {
         const hours = [["08h00", "09h25"],
         ["09h30", "10h55"],
         ["11h05", "12h30"],
-        //[,],
+        ["12h35","14h10"],
         ["14h15", "15h40"],
         ["15h45", "17h10"],
         ["17h15", "18h40"]];

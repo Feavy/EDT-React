@@ -5,7 +5,7 @@ export default class DayData {
     private _hoursData = new Map<number, HourData>();
 
     constructor() {
-        [480, 570, 660, 855, 945, 1035].forEach(startTime => {
+        [495, 585, 675, 765, 855, 945, 1035].forEach(startTime => {
             this._hoursData.set(startTime, new HourData(startTime, startTime+90));
         });
     }

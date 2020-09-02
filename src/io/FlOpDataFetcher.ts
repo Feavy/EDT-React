@@ -23,10 +23,9 @@ export default class FlOpDataFetcher {
         keys = lines[i++].split(',');
         
         let line = lines[i];
-        while(line && !line.includes("id")) {
+        while(line){// && !line.includes("id")) {   // TODO : savoir pourquoi je breakais sur "id" ?
             line = lines[i++];
             const elem:CSVElement = new CSVElement(keys, line.split(','));
-
             const caseData = new CaseData(elem.get('module'), elem.get('prof_name'), elem.get('room'), elem.get('room_type'), elem.get('coursetype'), elem.get('color_bg'), elem.get('color_txt'));
 
             if(elem.get('start_time') !== '???')
